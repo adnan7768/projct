@@ -3,133 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Stylish Landing Page</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<title>Liquid Effect</title>
 
 <style>
 
-*{
+body,html{
 margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Poppins',sans-serif;
+height:100%;
+overflow:hidden;
+font-family:sans-serif;
 }
 
-body{
-background: linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+#app{
+position:relative;
+width:100%;
+height:100vh;
+}
+
+canvas{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+}
+
+.text{
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
 color:white;
-}
-
-/* NAVBAR */
-
-nav{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:20px 8%;
-}
-
-.logo{
-font-size:24px;
-font-weight:600;
-}
-
-nav ul{
-display:flex;
-gap:30px;
-list-style:none;
-}
-
-nav a{
-text-decoration:none;
-color:white;
-transition:0.3s;
-}
-
-nav a:hover{
-color:#00f2fe;
-}
-
-/* HERO */
-
-.hero{
-height:90vh;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
+font-size:5vw;
+font-weight:bold;
+letter-spacing:5px;
 text-align:center;
-padding:20px;
-}
-
-.hero h1{
-font-size:55px;
-margin-bottom:20px;
-}
-
-.hero p{
-max-width:600px;
-opacity:0.8;
-margin-bottom:30px;
-}
-
-.btn{
-padding:14px 35px;
-background:#00f2fe;
-border:none;
-border-radius:30px;
-font-weight:600;
-cursor:pointer;
-transition:0.3s;
-}
-
-.btn:hover{
-transform:scale(1.1);
-}
-
-/* FEATURES */
-
-.features{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-gap:30px;
-padding:60px 8%;
-}
-
-.card{
-background:rgba(255,255,255,0.08);
-padding:30px;
-border-radius:15px;
-backdrop-filter:blur(10px);
-transition:0.3s;
-}
-
-.card:hover{
-transform:translateY(-10px);
-background:rgba(255,255,255,0.15);
-}
-
-/* FOOTER */
-
-footer{
-text-align:center;
-padding:30px;
-opacity:0.7;
-}
-
-/* MOBILE */
-
-@media(max-width:768px){
-
-.hero h1{
-font-size:36px;
-}
-
-nav ul{
-display:none;
-}
-
 }
 
 </style>
@@ -137,53 +45,97 @@ display:none;
 
 <body>
 
-<nav>
+<div id="app">
 
-<div class="logo">MySite</div>
+<canvas id="canvas"></canvas>
 
-<ul>
-<li><a href="#">Home</a></li>
-<li><a href="#">About</a></li>
-<li><a href="#">Services</a></li>
-<li><a href="#">Contact</a></li>
-</ul>
-
-</nav>
-
-<section class="hero">
-
-<h1>Build Stylish Websites 🚀</h1>
-
-<p>
-Create modern responsive websites using HTML and CSS with beautiful animations and modern UI.
-</p>
-
-<button class="btn">Explore</button>
-
-</section>
-
-<section class="features">
-
-<div class="card">
-<h3>Modern Design</h3>
-<p>Clean and stylish UI for modern websites.</p>
+<div class="text">
+LIQUID<br>EFFECT
 </div>
 
-<div class="card">
-<h3>Responsive</h3>
-<p>Works perfectly on mobile, tablet and desktop.</p>
 </div>
 
-<div class="card">
-<h3>Fast Performance</h3>
-<p>Lightweight and optimized HTML design.</p>
-</div>
+<script>
 
-</section>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
 
-<footer>
-© 2026 Stylish Website
-</footer>
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let mouse = {x:0,y:0};
+
+window.addEventListener("mousemove",e=>{
+mouse.x=e.clientX;
+mouse.y=e.clientY;
+});
+
+class Particle{
+
+constructor(x,y){
+this.x=x;
+this.y=y;
+this.size=Math.random()*3+1;
+this.dx=(Math.random()-0.5)*1.5;
+this.dy=(Math.random()-0.5)*1.5;
+}
+
+update(){
+
+let distX=this.x-mouse.x;
+let distY=this.y-mouse.y;
+let dist=Math.sqrt(distX*distX+distY*distY);
+
+if(dist<120){
+this.x+=distX/10;
+this.y+=distY/10;
+}
+
+this.x+=this.dx;
+this.y+=this.dy;
+
+this.draw();
+
+}
+
+draw(){
+ctx.fillStyle="rgba(255,255,255,0.5)";
+ctx.beginPath();
+ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+ctx.fill();
+}
+
+}
+
+let particles=[];
+
+for(let i=0;i<500;i++){
+
+particles.push(new Particle(
+Math.random()*canvas.width,
+Math.random()*canvas.height
+));
+
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+particles.forEach(p=>p.update());
+
+requestAnimationFrame(animate);
+
+}
+
+animate();
+
+window.addEventListener("resize",()=>{
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+});
+
+</script>
 
 </body>
 </html>

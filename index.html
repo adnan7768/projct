@@ -2,36 +2,91 @@
 <html>
 
 <head>
+
 <title>Member Login</title>
+
+<style>
+
+/* simple login page */
+
+body{
+font-family:Arial;
+text-align:center;
+margin-top:100px;
+}
+
+/* surprise page */
+
+.surprise{
+display:none;
+height:100vh;
+margin:0;
+padding:0;
+background:linear-gradient(135deg,#ff4e50,#f9d423);
+color:white;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+font-family:sans-serif;
+}
+
+.title{
+font-size:60px;
+margin-bottom:20px;
+}
+
+.message{
+font-size:22px;
+max-width:600px;
+line-height:1.5;
+}
+
+button{
+padding:10px 20px;
+font-size:16px;
+cursor:pointer;
+}
+
+</style>
+
 </head>
 
 <body>
+
+<div id="login">
 
 <h2>Member Login</h2>
 
 <p>Please sign in to continue</p>
 
-Username:<br>
-<input type="text" id="user">
+<input type="text" placeholder="Username">
 <br><br>
 
-Password:<br>
-<input type="password" id="pass">
+<input type="password" id="pass" placeholder="Password">
 <br><br>
 
 <button onclick="login()">Sign In</button>
 
-<div id="surprise" style="display:none; margin-top:40px;">
+</div>
 
-<h2>Happy Birthday</h2>
 
-<p>This was not actually a login page.</p>
 
-<p>I just made this small page for you.</p>
+<div id="surprise" class="surprise">
 
-<p>Hope you have a great birthday.</p>
+<div class="title">🎉 Happy Birthday 🎂</div>
+
+<div class="message">
+You probably thought this was just a normal login page.<br><br>
+
+But I made this small surprise for you.<br><br>
+
+Hope your birthday is amazing today.
+</div>
 
 </div>
+
+
 
 <script>
 
@@ -43,7 +98,8 @@ let input=document.getElementById("pass").value
 
 if(input===password){
 
-document.getElementById("surprise").style.display="block"
+document.getElementById("login").style.display="none"
+document.getElementById("surprise").style.display="flex"
 
 }
 

@@ -4,83 +4,73 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Birthday Surprise ❤️</title>
+<title>Secure Portal</title>
 
 <style>
 
 body{
 margin:0;
-font-family:'Poppins',sans-serif;
+font-family:Arial;
+background:#0f172a;
 height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-background:linear-gradient(-45deg,#ff4b6e,#ff758c,#ff7eb3,#ff9a9e);
-background-size:400% 400%;
-animation:bg 10s ease infinite;
 color:white;
+}
+
+.login-box{
+background:#1e293b;
+padding:40px;
+border-radius:10px;
+width:320px;
 text-align:center;
-overflow:hidden;
+box-shadow:0 10px 40px rgba(0,0,0,0.5);
 }
 
-@keyframes bg{
-0%{background-position:0% 50%;}
-50%{background-position:100% 50%;}
-100%{background-position:0% 50%;}
-}
-
-.container{
-max-width:500px;
-padding:20px;
-}
-
-h1{
-font-size:40px;
-margin-bottom:10px;
+input{
+width:100%;
+padding:12px;
+margin-top:10px;
+border:none;
+border-radius:5px;
 }
 
 button{
-padding:15px 30px;
+width:100%;
+padding:12px;
+margin-top:15px;
+background:#22c55e;
 border:none;
-border-radius:30px;
-background:white;
-color:#ff4b6e;
-font-size:18px;
+color:white;
+border-radius:5px;
+font-size:16px;
 cursor:pointer;
-margin-top:20px;
-transition:.3s;
 }
 
 button:hover{
-transform:scale(1.1);
+background:#16a34a;
 }
 
 .hidden{
 display:none;
 }
 
-.gallery{
-display:flex;
-justify-content:center;
-gap:10px;
-margin-top:20px;
-}
-
-.gallery img{
-width:120px;
-border-radius:10px;
+.surprise{
+text-align:center;
+padding:40px;
 }
 
 .heart{
 position:absolute;
-bottom:-20px;
+bottom:-10px;
 font-size:20px;
 animation:float 6s linear infinite;
 }
 
 @keyframes float{
-0%{transform:translateY(0);opacity:1;}
-100%{transform:translateY(-100vh);opacity:0;}
+0%{transform:translateY(0)}
+100%{transform:translateY(-100vh)}
 }
 
 </style>
@@ -89,63 +79,80 @@ animation:float 6s linear infinite;
 
 <body>
 
-<div class="container">
+<div id="login" class="login-box">
+
+<h2>Secure Login</h2>
+
+<input type="text" placeholder="Username" id="user">
+
+<input type="password" placeholder="Password" id="pass">
+
+<button onclick="login()">Login</button>
+
+</div>
+
+
+<div id="surprise" class="hidden surprise">
 
 <h1>🎂 Happy Birthday ❤️</h1>
 
 <p>
-Even though we are far apart,  
-I made something special just for you.
+You thought this was a login page 😄  
+But it's actually a surprise just for you.
 </p>
 
-<button onclick="openSurprise()">Open Your Surprise</button>
-
-<div id="surprise" class="hidden">
-
-<h2>💖 Our Memories</h2>
-
-<div class="gallery">
-<img src="photo1.jpg">
-<img src="photo2.jpg">
-<img src="photo3.jpg">
-</div>
+<p>
+Even though we are far apart,  
+I made this for you.
+</p>
 
 <h2>💌 My Message</h2>
 
 <p>
-You are the most beautiful part of my life.  
-Distance doesn't change what you mean to me.  
-
+You are the most special person in my life.  
 Happy Birthday ❤️
 </p>
 
 </div>
 
-</div>
 
 <script>
 
-function openSurprise(){
+function login(){
+
+let password="1234"
+
+let input=document.getElementById("pass").value
+
+if(input===password){
+
+document.getElementById("login").style.display="none"
 document.getElementById("surprise").style.display="block"
-}
-
-function createHeart(){
-
-let heart=document.createElement("div")
-
-heart.className="heart"
-
-heart.innerHTML="❤️"
-
-heart.style.left=Math.random()*100+"vw"
-
-document.body.appendChild(heart)
-
-setTimeout(()=>heart.remove(),6000)
 
 }
 
-setInterval(createHeart,300)
+else{
+
+alert("Incorrect password")
+
+}
+
+}
+
+function heart(){
+
+let h=document.createElement("div")
+h.className="heart"
+h.innerHTML="❤️"
+h.style.left=Math.random()*100+"vw"
+
+document.body.appendChild(h)
+
+setTimeout(()=>h.remove(),6000)
+
+}
+
+setInterval(heart,300)
 
 </script>
 

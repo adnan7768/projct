@@ -1,141 +1,243 @@
+```html
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Liquid Effect</title>
+<title>Birthday Demo</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 
-body,html{
+body{
 margin:0;
-height:100%;
-overflow:hidden;
-font-family:sans-serif;
-}
-
-#app{
-position:relative;
-width:100%;
-height:100vh;
-}
-
-canvas{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-}
-
-.text{
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-color:white;
-font-size:5vw;
-font-weight:bold;
-letter-spacing:5px;
+font-family:'Fredoka',sans-serif;
+background:#EED7F7;
 text-align:center;
 }
 
-</style>
-</head>
+/* LOGIN */
 
+#login{
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+}
+
+.box{
+background:white;
+padding:30px;
+border-radius:12px;
+box-shadow:0 10px 20px rgba(0,0,0,0.2);
+}
+
+button{
+padding:10px 20px;
+border:none;
+background:#B784C9;
+color:white;
+border-radius:6px;
+cursor:pointer;
+}
+
+/* QUESTION PAGE */
+
+#questionPage{
+display:none;
+padding-top:100px;
+}
+
+.option{
+margin:10px auto;
+padding:10px;
+width:200px;
+background:#CFA3D9;
+border-radius:10px;
+cursor:pointer;
+}
+
+/* CARDS */
+
+#cardsPage{
+display:none;
+padding:40px;
+}
+
+.cards{
+display:flex;
+justify-content:center;
+gap:30px;
+}
+
+.card{
+width:150px;
+height:120px;
+background:#CFA3D9;
+border-radius:15px;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+font-size:20px;
+}
+
+/* BIRTHDAY */
+
+#birthdayPage{
+display:none;
+padding-top:100px;
+}
+
+.cake{
+font-size:80px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
 <body>
 
-<div id="app">
+<!-- LOGIN -->
 
-<canvas id="canvas"></canvas>
+<div id="login">
 
-<div class="text">
-LIQUID<br>EFFECT
+<div class="box">
+
+<h2>Login</h2>
+
+<button onclick="start()">Enter</button>
+
 </div>
+
+</div>
+
+<!-- QUESTION -->
+
+<div id="questionPage">
+
+<h2 id="question"></h2>
+
+<div id="answers"></div>
+
+</div>
+
+<!-- CARDS -->
+
+<div id="cardsPage">
+
+<h2>♥ THESE ARE FOR YOU ♥</h2>
+
+<div class="cards">
+
+<div class="card">🎵 Music</div>
+<div class="card">📷 Photos</div>
+<div class="card">💌 Letter</div>
+
+</div>
+
+<br>
+
+<button onclick="showBirthday()">Next</button>
+
+</div>
+
+<!-- BIRTHDAY -->
+
+<div id="birthdayPage">
+
+<h1>Happy Birthday ❤️</h1>
+
+<p>Click the cake</p>
+
+<div class="cake">🎂</div>
 
 </div>
 
 <script>
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-let mouse = {x:0,y:0};
-
-window.addEventListener("mousemove",e=>{
-mouse.x=e.clientX;
-mouse.y=e.clientY;
-});
-
-class Particle{
-
-constructor(x,y){
-this.x=x;
-this.y=y;
-this.size=Math.random()*3+1;
-this.dx=(Math.random()-0.5)*1.5;
-this.dy=(Math.random()-0.5)*1.5;
+let questions=[
+{
+q:"Where did we meet?",
+a:["School","Instagram","Cafe"],
+correct:1
+},
+{
+q:"Who said I love you first?",
+a:["Me","You"],
+correct:0
+},
+{
+q:"What day is today?",
+a:["Holiday","Your Birthday","Random"],
+correct:1
 }
+];
 
-update(){
+let current=0;
 
-let distX=this.x-mouse.x;
-let distY=this.y-mouse.y;
-let dist=Math.sqrt(distX*distX+distY*distY);
+function start(){
 
-if(dist<120){
-this.x+=distX/10;
-this.y+=distY/10;
-}
+document.getElementById("login").style.display="none";
+document.getElementById("questionPage").style.display="block";
 
-this.x+=this.dx;
-this.y+=this.dy;
-
-this.draw();
+showQuestion();
 
 }
 
-draw(){
-ctx.fillStyle="rgba(255,255,255,0.5)";
-ctx.beginPath();
-ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
-ctx.fill();
+function showQuestion(){
+
+let q=questions[current];
+
+document.getElementById("question").innerText=q.q;
+
+let html="";
+
+for(let i=0;i<q.a.length;i++){
+
+html+=`<div class="option" onclick="check(${i})">${q.a[i]}</div>`;
+
+}
+
+document.getElementById("answers").innerHTML=html;
+
+}
+
+function check(i){
+
+if(i===questions[current].correct){
+
+current++;
+
+if(current<questions.length){
+
+showQuestion();
+
+}else{
+
+document.getElementById("questionPage").style.display="none";
+document.getElementById("cardsPage").style.display="block";
+
+}
+
+}else{
+
+alert("Try again 😄");
+
 }
 
 }
 
-let particles=[];
+function showBirthday(){
 
-for(let i=0;i<500;i++){
-
-particles.push(new Particle(
-Math.random()*canvas.width,
-Math.random()*canvas.height
-));
+document.getElementById("cardsPage").style.display="none";
+document.getElementById("birthdayPage").style.display="block";
 
 }
-
-function animate(){
-
-ctx.clearRect(0,0,canvas.width,canvas.height);
-
-particles.forEach(p=>p.update());
-
-requestAnimationFrame(animate);
-
-}
-
-animate();
-
-window.addEventListener("resize",()=>{
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-});
 
 </script>
 
 </body>
 </html>
+```

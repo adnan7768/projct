@@ -1,68 +1,73 @@
-```html
+
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Birthday Demo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Lovely Birthday</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
 
 <style>
 
-body{
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
 font-family:'Fredoka',sans-serif;
-background:#EED7F7;
-text-align:center;
 }
 
-/* LOGIN */
-
-#login{
+body{
 height:100vh;
+background:linear-gradient(135deg,#f3d6ff,#e8c5ff,#f7e4ff);
 display:flex;
 justify-content:center;
 align-items:center;
+overflow:hidden;
 }
 
-.box{
-background:white;
-padding:30px;
-border-radius:12px;
-box-shadow:0 10px 20px rgba(0,0,0,0.2);
+/* FLOATING HEARTS */
+
+.heart{
+position:absolute;
+color:#ff7ab6;
+font-size:20px;
+animation:float 6s infinite linear;
+opacity:0.6;
 }
 
-button{
-padding:10px 20px;
-border:none;
-background:#B784C9;
-color:white;
-border-radius:6px;
-cursor:pointer;
+@keyframes float{
+0%{transform:translateY(100vh)}
+100%{transform:translateY(-10vh)}
 }
 
-/* QUESTION PAGE */
+/* MAIN CARD */
 
-#questionPage{
-display:none;
-padding-top:100px;
+.container{
+width:850px;
+background:rgba(255,255,255,0.75);
+backdrop-filter:blur(15px);
+padding:40px;
+border-radius:25px;
+box-shadow:0 25px 40px rgba(0,0,0,0.2);
+text-align:center;
 }
 
-.option{
-margin:10px auto;
-padding:10px;
-width:200px;
-background:#CFA3D9;
-border-radius:10px;
-cursor:pointer;
+/* TITLE */
+
+.title{
+font-size:36px;
+color:#9b59b6;
+margin-bottom:10px;
+}
+
+.subtitle{
+color:#777;
+margin-bottom:40px;
 }
 
 /* CARDS */
-
-#cardsPage{
-display:none;
-padding:40px;
-}
 
 .cards{
 display:flex;
@@ -71,172 +76,110 @@ gap:30px;
 }
 
 .card{
-width:150px;
-height:120px;
-background:#CFA3D9;
-border-radius:15px;
+width:160px;
+height:140px;
+background:linear-gradient(135deg,#d8a8f2,#c18ae6);
+border-radius:20px;
 display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
+color:white;
 font-size:20px;
+cursor:pointer;
+transition:0.3s;
+box-shadow:0 10px 20px rgba(0,0,0,0.2);
+}
+
+.card:hover{
+transform:translateY(-8px) scale(1.05);
 }
 
 /* BIRTHDAY */
 
-#birthdayPage{
-display:none;
-padding-top:100px;
+.birthday{
+margin-top:40px;
 }
 
 .cake{
-font-size:80px;
+font-size:90px;
+cursor:pointer;
+animation:bounce 2s infinite;
+}
+
+@keyframes bounce{
+0%,100%{transform:translateY(0)}
+50%{transform:translateY(-12px)}
+}
+
+button{
+margin-top:20px;
+padding:12px 25px;
+border:none;
+border-radius:25px;
+background:#c18ae6;
+color:white;
+font-size:16px;
 cursor:pointer;
 }
 
-</style>
+button:hover{
+background:#a86bd8;
+}
 
+</style>
 </head>
+
 <body>
 
-<!-- LOGIN -->
+<!-- FLOATING HEARTS -->
 
-<div id="login">
+<div class="heart" style="left:10%">❤</div>
+<div class="heart" style="left:25%">❤</div>
+<div class="heart" style="left:40%">❤</div>
+<div class="heart" style="left:55%">❤</div>
+<div class="heart" style="left:70%">❤</div>
+<div class="heart" style="left:85%">❤</div>
 
-<div class="box">
+<div class="container">
 
-<h2>Login</h2>
-
-<button onclick="start()">Enter</button>
-
-</div>
-
-</div>
-
-<!-- QUESTION -->
-
-<div id="questionPage">
-
-<h2 id="question"></h2>
-
-<div id="answers"></div>
-
-</div>
-
-<!-- CARDS -->
-
-<div id="cardsPage">
-
-<h2>♥ THESE ARE FOR YOU ♥</h2>
+<div class="title">💜 THESE ARE FOR YOU 💜</div>
+<div class="subtitle">Click a memory</div>
 
 <div class="cards">
 
-<div class="card">🎵 Music</div>
-<div class="card">📷 Photos</div>
-<div class="card">💌 Letter</div>
+<div class="card">
+🎵
+Music
+</div>
+
+<div class="card">
+📷
+Photos
+</div>
+
+<div class="card">
+💌
+Letter
+</div>
 
 </div>
 
-<br>
+<div class="birthday">
 
-<button onclick="showBirthday()">Next</button>
+<h2 style="color:#9b59b6;margin-top:30px;">
+Happy Birthday ❤️
+</h2>
 
-</div>
-
-<!-- BIRTHDAY -->
-
-<div id="birthdayPage">
-
-<h1>Happy Birthday ❤️</h1>
-
-<p>Click the cake</p>
+<p>Click the cake for your surprise</p>
 
 <div class="cake">🎂</div>
 
+<button>Open Surprise</button>
+
 </div>
 
-<script>
-
-let questions=[
-{
-q:"Where did we meet?",
-a:["School","Instagram","Cafe"],
-correct:1
-},
-{
-q:"Who said I love you first?",
-a:["Me","You"],
-correct:0
-},
-{
-q:"What day is today?",
-a:["Holiday","Your Birthday","Random"],
-correct:1
-}
-];
-
-let current=0;
-
-function start(){
-
-document.getElementById("login").style.display="none";
-document.getElementById("questionPage").style.display="block";
-
-showQuestion();
-
-}
-
-function showQuestion(){
-
-let q=questions[current];
-
-document.getElementById("question").innerText=q.q;
-
-let html="";
-
-for(let i=0;i<q.a.length;i++){
-
-html+=`<div class="option" onclick="check(${i})">${q.a[i]}</div>`;
-
-}
-
-document.getElementById("answers").innerHTML=html;
-
-}
-
-function check(i){
-
-if(i===questions[current].correct){
-
-current++;
-
-if(current<questions.length){
-
-showQuestion();
-
-}else{
-
-document.getElementById("questionPage").style.display="none";
-document.getElementById("cardsPage").style.display="block";
-
-}
-
-}else{
-
-alert("Try again 😄");
-
-}
-
-}
-
-function showBirthday(){
-
-document.getElementById("cardsPage").style.display="none";
-document.getElementById("birthdayPage").style.display="block";
-
-}
-
-</script>
+</div>
 
 </body>
 </html>

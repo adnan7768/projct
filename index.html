@@ -1,116 +1,36 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Secure Portal</title>
-
-<style>
-
-body{
-margin:0;
-font-family:Arial;
-background:#0f172a;
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-color:white;
-}
-
-.login-box{
-background:#1e293b;
-padding:40px;
-border-radius:10px;
-width:320px;
-text-align:center;
-box-shadow:0 10px 40px rgba(0,0,0,0.5);
-}
-
-input{
-width:100%;
-padding:12px;
-margin-top:10px;
-border:none;
-border-radius:5px;
-}
-
-button{
-width:100%;
-padding:12px;
-margin-top:15px;
-background:#22c55e;
-border:none;
-color:white;
-border-radius:5px;
-font-size:16px;
-cursor:pointer;
-}
-
-button:hover{
-background:#16a34a;
-}
-
-.hidden{
-display:none;
-}
-
-.surprise{
-text-align:center;
-padding:40px;
-}
-
-.heart{
-position:absolute;
-bottom:-10px;
-font-size:20px;
-animation:float 6s linear infinite;
-}
-
-@keyframes float{
-0%{transform:translateY(0)}
-100%{transform:translateY(-100vh)}
-}
-
-</style>
-
+<title>Login</title>
 </head>
 
 <body>
 
-<div id="login" class="login-box">
+<h2>Login Page</h2>
 
-<h2>Secure Login</h2>
+<p>Please enter your login details</p>
 
-<input type="text" placeholder="Username" id="user">
+<input type="text" id="user" placeholder="Username">
+<br><br>
 
-<input type="password" placeholder="Password" id="pass">
+<input type="password" id="pass" placeholder="Password">
+<br><br>
 
 <button onclick="login()">Login</button>
 
-</div>
 
-
-<div id="surprise" class="hidden surprise">
+<div id="surprise" style="display:none; margin-top:40px;">
 
 <h1>🎂 Happy Birthday ❤️</h1>
 
-<p>
-You thought this was a login page 😄  
-But it's actually a surprise just for you.
-</p>
+<p>You thought this was just a normal login page 😄</p>
+
+<p>But I made this surprise for you.</p>
 
 <p>
 Even though we are far apart,  
-I made this for you.
-</p>
-
-<h2>💌 My Message</h2>
-
-<p>
-You are the most special person in my life.  
-Happy Birthday ❤️
+you are very special to me.
 </p>
 
 </div>
@@ -126,35 +46,20 @@ let input=document.getElementById("pass").value
 
 if(input===password){
 
-document.getElementById("login").style.display="none"
 document.getElementById("surprise").style.display="block"
 
 }
 
 else{
 
-alert("Incorrect password")
+alert("Wrong password")
 
 }
 
 }
-
-function heart(){
-
-let h=document.createElement("div")
-h.className="heart"
-h.innerHTML="❤️"
-h.style.left=Math.random()*100+"vw"
-
-document.body.appendChild(h)
-
-setTimeout(()=>h.remove(),6000)
-
-}
-
-setInterval(heart,300)
 
 </script>
 
 </body>
+
 </html>

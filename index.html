@@ -2,39 +2,36 @@
 <html>
 
 <head>
-<title>Login</title>
+<title>Member Login</title>
 </head>
 
 <body>
 
-<h2>Login Page</h2>
+<h2>Member Login</h2>
 
-<p>Please enter your login details</p>
+<p>Please sign in to continue</p>
 
-<input type="text" id="user" placeholder="Username">
+Username:<br>
+<input type="text" id="user">
 <br><br>
 
-<input type="password" id="pass" placeholder="Password">
+Password:<br>
+<input type="password" id="pass">
 <br><br>
 
-<button onclick="login()">Login</button>
-
+<button onclick="login()">Sign In</button>
 
 <div id="surprise" style="display:none; margin-top:40px;">
 
-<h1>🎂 Happy Birthday ❤️</h1>
+<h2>Happy Birthday</h2>
 
-<p>You thought this was just a normal login page 😄</p>
+<p>This was not actually a login page.</p>
 
-<p>But I made this surprise for you.</p>
+<p>I just made this small page for you.</p>
 
-<p>
-Even though we are far apart,  
-you are very special to me.
-</p>
+<p>Hope you have a great birthday.</p>
 
 </div>
-
 
 <script>
 
@@ -52,7 +49,7 @@ document.getElementById("surprise").style.display="block"
 
 else{
 
-alert("Wrong password")
+alert("Incorrect password")
 
 }
 

@@ -1463,27 +1463,222 @@ function closeMBtn() {
 }
 
 /* ============================================================
-   PUZZLE
+   PUZZLE — fully custom canvas drag-and-drop, no library
    ============================================================ */
 function startPuzzle() {
   document.getElementById('puzzleBtn').style.display = 'none';
-  try {
-    new Puzzle({
-      container: "forPuzzle",
-      image: "photopuzzle.jpeg",
-      piecesX: 3,
-      piecesY: 3,
-      pieceSize: 100,
-      onComplete: function() {
-        playFireworkVolley(6);
-        setTimeout(function(){ nav('final'); burst(); }, 400);
+
+  var COLS = 3, ROWS = 3;
+  var container = document.getElementById('forPuzzle');
+
+  /* --- Build wrapper --- */
+  container.innerHTML =
+    '<p id="puzStatus" style="font-family:\'Caveat\',cursive;font-size:17px;color:#f0588b;margin-bottom:10px;font-weight:700">Drag pieces into the grid! 🧩</p>' +
+    '<div id="puzWrap" style="position:relative;touch-action:none;user-select:none;-webkit-user-select:none"></div>' +
+    '<div id="puzTray" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:14px;padding:12px;background:white;border:2.5px solid #2d2d3a;border-radius:4px;box-shadow:3px 3px 0 #2d2d3a;min-height:80px"></div>';
+
+  var img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = function() { buildPuzzle(img); };
+  img.onerror = function() {
+    container.innerHTML = '<p style="padding:24px;font-family:\'Caveat\',cursive;font-size:20px;color:#f0588b;border:2.5px dashed #f0588b;border-radius:4px">Could not load puzzle image.<br>Make sure <b>photopuzzle.jpeg</b> is in the same folder!</p>';
+  };
+  img.src = 'photopuzzle.jpeg';
+
+  function buildPuzzle(img) {
+    var wrap = document.getElementById('puzWrap');
+    var tray = document.getElementById('puzTray');
+    var W = Math.min(container.offsetWidth || 300, 300);
+    var pw = Math.floor(W / COLS);   /* piece width */
+    var ph = pw;                      /* square pieces */
+    var totalW = pw * COLS;
+    var totalH = ph * ROWS;
+
+    /* --- Draw grid background --- */
+    wrap.style.width  = totalW + 'px';
+    wrap.style.height = totalH + 'px';
+    wrap.style.margin = '0 auto';
+    wrap.style.border = '3px solid #2d2d3a';
+    wrap.style.boxShadow = '4px 4px 0 #2d2d3a';
+    wrap.style.background = '#faf5e9';
+    wrap.style.borderRadius = '4px';
+    wrap.style.overflow = 'visible';
+
+    /* Draw faint grid slots */
+    for (var r = 0; r < ROWS; r++) {
+      for (var c = 0; c < COLS; c++) {
+        var slot = document.createElement('div');
+        slot.style.cssText = 'position:absolute;width:'+pw+'px;height:'+ph+'px;' +
+          'left:'+(c*pw)+'px;top:'+(r*ph)+'px;' +
+          'border:1px dashed rgba(240,88,139,0.3);box-sizing:border-box;' +
+          'background:rgba(240,88,139,0.04);';
+        slot.dataset.row = r;
+        slot.dataset.col = c;
+        slot.classList.add('puz-slot');
+        wrap.appendChild(slot);
       }
+    }
+
+    /* --- Create pieces --- */
+    var pieces = [];
+    var order = [];
+    for (var i = 0; i < ROWS * COLS; i++) order.push(i);
+    /* shuffle */
+    for (var j = order.length - 1; j > 0; j--) {
+      var k = Math.floor(Math.random() * (j + 1));
+      var tmp = order[j]; order[j] = order[k]; order[k] = tmp;
+    }
+
+    order.forEach(function(idx) {
+      var row = Math.floor(idx / COLS);
+      var col = idx % COLS;
+
+      var canvas = document.createElement('canvas');
+      canvas.width  = pw;
+      canvas.height = ph;
+      var ctx2 = canvas.getContext('2d');
+      ctx2.drawImage(img,
+        col * (img.naturalWidth / COLS),
+        row * (img.naturalHeight / ROWS),
+        img.naturalWidth / COLS,
+        img.naturalHeight / ROWS,
+        0, 0, pw, ph
+      );
+
+      /* Piece wrapper div */
+      var piece = document.createElement('div');
+      piece.style.cssText = 'display:inline-block;border:2px solid #2d2d3a;border-radius:3px;' +
+        'cursor:grab;box-shadow:2px 2px 0 #2d2d3a;background:white;' +
+        'touch-action:none;user-select:none;-webkit-user-select:none;' +
+        'transition:box-shadow .1s;';
+      piece.dataset.row = row;
+      piece.dataset.col = col;
+      piece.dataset.placed = '0';
+      piece.appendChild(canvas);
+      tray.appendChild(piece);
+      pieces.push(piece);
+
+      makeDraggable(piece);
     });
-  } catch(e) {
-    var fp = document.getElementById('forPuzzle');
-    fp.innerHTML = '<p style="padding:28px;font-family:\'Caveat\',cursive;font-size:22px;color:#f0588b;border:2.5px dashed #f0588b;border-radius:4px;margin-bottom:16px">Puzzle unlocked — you did it! 🎉</p>';
-    playFireworkVolley(5);
-    setTimeout(function(){ nav('final'); burst(); }, 1800);
+
+    /* ---- Drag logic ---- */
+    var dragging = null;
+    var dragOffX = 0, dragOffY = 0;
+    var dragOriginParent = null;
+
+    function makeDraggable(el) {
+      /* Mouse */
+      el.addEventListener('mousedown', dragStart);
+      /* Touch */
+      el.addEventListener('touchstart', dragStart, { passive: false });
+    }
+
+    function dragStart(e) {
+      if (e.type === 'touchstart') e.preventDefault();
+      dragging = e.currentTarget;
+      dragging.style.zIndex = 9999;
+      dragging.style.position = 'fixed';
+      dragging.style.boxShadow = '6px 6px 0 #2d2d3a';
+      dragging.style.cursor = 'grabbing';
+      dragOriginParent = dragging.parentNode;
+
+      var rect = dragging.getBoundingClientRect();
+      var cx = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+      var cy = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+      dragOffX = cx - rect.left;
+      dragOffY = cy - rect.top;
+
+      dragging.style.left = (cx - dragOffX) + 'px';
+      dragging.style.top  = (cy - dragOffY) + 'px';
+      dragging.style.width = pw + 'px';
+      document.body.appendChild(dragging);
+    }
+
+    function dragMove(e) {
+      if (!dragging) return;
+      if (e.type === 'touchmove') e.preventDefault();
+      var cx = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+      var cy = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+      dragging.style.left = (cx - dragOffX) + 'px';
+      dragging.style.top  = (cy - dragOffY) + 'px';
+    }
+
+    function dragEnd(e) {
+      if (!dragging) return;
+      var cx = e.type === 'touchend' ? e.changedTouches[0].clientX : e.clientX;
+      var cy = e.type === 'touchend' ? e.changedTouches[0].clientY : e.clientY;
+
+      var wrapRect = wrap.getBoundingClientRect();
+      var relX = cx - wrapRect.left;
+      var relY = cy - wrapRect.top;
+
+      var targetCol = Math.floor(relX / pw);
+      var targetRow = Math.floor(relY / ph);
+
+      var snapped = false;
+      var snapTolerance = pw * 0.75;
+
+      if (
+        relX >= -snapTolerance && relX <= totalW + snapTolerance &&
+        relY >= -snapTolerance && relY <= totalH + snapTolerance &&
+        targetRow >= 0 && targetRow < ROWS &&
+        targetCol >= 0 && targetCol < COLS
+      ) {
+        var needRow = parseInt(dragging.dataset.row);
+        var needCol = parseInt(dragging.dataset.col);
+
+        if (targetRow === needRow && targetCol === needCol) {
+          /* ✅ Correct slot! */
+          dragging.style.position = 'absolute';
+          dragging.style.left = (targetCol * pw) + 'px';
+          dragging.style.top  = (targetRow * ph) + 'px';
+          dragging.style.zIndex = 10;
+          dragging.style.cursor = 'default';
+          dragging.style.border = '2.5px solid #f0588b';
+          dragging.style.boxShadow = '0 0 0 2px #f0588b55';
+          dragging.dataset.placed = '1';
+          dragging.style.width = '';
+          wrap.appendChild(dragging);
+          snapped = true;
+          /* play a soft chime */
+          playCorrectSound();
+          checkComplete();
+        } else {
+          /* Wrong slot — shake and return */
+          dragging.style.border = '2.5px solid #ff6b6b';
+          setTimeout(function(){ if(dragging) dragging.style.border = '2px solid #2d2d3a'; }, 500);
+        }
+      }
+
+      if (!snapped) {
+        /* Return to tray */
+        dragging.style.position = 'relative';
+        dragging.style.left = '';
+        dragging.style.top  = '';
+        dragging.style.zIndex = '';
+        dragging.style.width = '';
+        dragging.style.boxShadow = '2px 2px 0 #2d2d3a';
+        dragging.style.cursor = 'grab';
+        dragOriginParent.appendChild(dragging);
+      }
+      dragging = null;
+    }
+
+    document.addEventListener('mousemove', dragMove);
+    document.addEventListener('mouseup',   dragEnd);
+    document.addEventListener('touchmove', dragMove, { passive: false });
+    document.addEventListener('touchend',  dragEnd);
+
+    function checkComplete() {
+      var placed = wrap.querySelectorAll('[data-placed="1"]').length;
+      var status = document.getElementById('puzStatus');
+      status.textContent = (ROWS * COLS - placed) + ' pieces left! 🧩';
+      if (placed === ROWS * COLS) {
+        status.textContent = '🎉 Puzzle Complete!';
+        playFireworkVolley(6);
+        setTimeout(function(){ nav('final'); burst(); }, 700);
+      }
+    }
   }
 }
 
@@ -1543,8 +1738,6 @@ document.getElementById('ov').addEventListener('touchmove', function(e){
   if (e.target === this) e.preventDefault();
 }, { passive: false });
 </script>
-
-<script src="https://cdn.jsdelivr.net/npm/jigsaw-puzzle@1.0.0/dist/jigsaw-puzzle.min.js"></script>
 
 </body>
 </html>

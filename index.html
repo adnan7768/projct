@@ -1024,27 +1024,9 @@ body::before {
     </div>
   </div>
   <div style="text-align:center">
-    <button class="btn btn-p" style="max-width:240px;margin:0 auto" onclick="nav('puzzlePage')">
-      Continue
+    <button class="btn btn-p" style="max-width:240px;margin:0 auto" onclick="goToFinal()">
+      Continue 🎁
       <svg width="13" height="11" viewBox="0 0 50 46" fill="none"><path d="M25 42C25 42 4 28 4 14C4 7 9 2 15 2C19 2 23 5 25 9C27 5 31 2 35 2C41 2 46 7 46 14C46 28 25 42 25 42Z" fill="white" stroke="rgba(255,255,255,.4)" stroke-width="2"/></svg>
-    </button>
-  </div>
-</div>
-
-<!-- PUZZLE -->
-<div class="section" id="puzzlePage">
-  <div class="puz-card">
-    <span class="washi" style="top:-10px;left:36px;background:#a8e6cf;transform:rotate(-3deg)"></span>
-    <span class="washi" style="top:-10px;right:36px;background:#ffd94a;transform:rotate(4deg)"></span>
-    <div style="display:-webkit-flex;display:flex;-webkit-justify-content:center;justify-content:center;margin-bottom:10px;margin-top:8px">
-      <svg width="56" height="56" viewBox="0 0 80 80" fill="none"><rect x="8" y="8" width="28" height="28" rx="3" fill="#d4b8f0" stroke="#2d2d3a" stroke-width="2.5"/><path d="M36 18 Q44 16 44 22 Q44 28 36 26" fill="#ffe8b3" stroke="#2d2d3a" stroke-width="2.5"/><rect x="44" y="8" width="28" height="28" rx="3" fill="#a8e6cf" stroke="#2d2d3a" stroke-width="2.5"/><path d="M44 26 Q36 24 36 30 Q36 36 44 34" fill="#ffd94a" stroke="#2d2d3a" stroke-width="2.5"/><rect x="8" y="44" width="28" height="28" rx="3" fill="#ff85a8" stroke="#2d2d3a" stroke-width="2.5"/><rect x="44" y="44" width="28" height="28" rx="3" fill="#ffd94a" stroke="#2d2d3a" stroke-width="2.5"/></svg>
-    </div>
-    <div class="puz-ttl">Complete the Puzzle</div>
-    <p class="puz-sub">Unlock your birthday surprise</p>
-    <div id="forPuzzle"></div>
-    <button class="btn btn-p" style="max-width:220px;margin:0 auto" id="puzzleBtn" onclick="startPuzzle()">
-      Start Puzzle
-      <svg width="14" height="14" viewBox="0 0 80 80" fill="none"><rect x="8" y="8" width="28" height="28" rx="3" fill="white" stroke="rgba(255,255,255,.5)" stroke-width="3"/><rect x="44" y="44" width="28" height="28" rx="3" fill="white" stroke="rgba(255,255,255,.5)" stroke-width="3"/></svg>
     </button>
   </div>
 </div>
@@ -1055,19 +1037,72 @@ body::before {
     <span class="washi" style="top:-10px;left:40px;background:#ffd94a;transform:rotate(-5deg)"></span>
     <span class="washi" style="top:-10px;right:48px;background:#a8e6cf;transform:rotate(4deg)"></span>
     <div class="sticker" style="top:12px;right:14px;font-size:7.5px;width:50px;height:50px">For<br>YOU!</div>
+
     <div class="fin-bday">Happy Birthday</div>
     <div class="fin-name">*NAME* !</div>
-    <p class="fin-hint">Tap the cake for your surprise!</p>
+
+    <!-- POSTER REVEAL -->
+    <div id="posterRevealWrap" style="position:relative;margin:18px auto 20px;max-width:320px;border:3px solid #2d2d3a;border-radius:6px;box-shadow:6px 6px 0 #2d2d3a;overflow:hidden;background:#fdf0f5;">
+      <!-- The actual poster image -->
+      <img id="posterImg" src="photopuzzle.jpeg" alt="Our Poster"
+        style="width:100%;display:block;opacity:0;transition:opacity 0.1s;"
+        onerror="this.src='';this.style.minHeight='200px'">
+      <!-- Curtain left -->
+      <div id="curtainL" style="position:absolute;top:0;left:0;width:50%;height:100%;
+        background:linear-gradient(135deg,#f0588b,#d4b8f0);
+        transition:transform 0.9s cubic-bezier(.77,0,.18,1);
+        display:flex;align-items:center;justify-content:flex-end;padding-right:10px;z-index:2;">
+        <svg width="28" height="28" viewBox="0 0 50 46" fill="none" style="opacity:.5"><path d="M25 42C25 42 4 28 4 14C4 7 9 2 15 2C19 2 23 5 25 9C27 5 31 2 35 2C41 2 46 7 46 14C46 28 25 42 25 42Z" fill="white"/></svg>
+      </div>
+      <!-- Curtain right -->
+      <div id="curtainR" style="position:absolute;top:0;right:0;width:50%;height:100%;
+        background:linear-gradient(225deg,#f0588b,#d4b8f0);
+        transition:transform 0.9s cubic-bezier(.77,0,.18,1);
+        display:flex;align-items:center;justify-content:flex-start;padding-left:10px;z-index:2;">
+        <svg width="28" height="28" viewBox="0 0 50 46" fill="none" style="opacity:.5"><path d="M25 42C25 42 4 28 4 14C4 7 9 2 15 2C19 2 23 5 25 9C27 5 31 2 35 2C41 2 46 7 46 14C46 28 25 42 25 42Z" fill="white"/></svg>
+      </div>
+      <!-- Reveal label shown before open -->
+      <div id="revealLabel" style="position:absolute;inset:0;display:flex;flex-direction:column;
+        align-items:center;justify-content:center;z-index:3;pointer-events:none;">
+        <div style="font-family:'Caveat',cursive;font-size:26px;font-weight:700;color:white;
+          text-shadow:0 2px 8px rgba(0,0,0,.3);line-height:1.2;text-align:center;">
+          🎁 Tap to Reveal!
+        </div>
+      </div>
+    </div>
+
+    <!-- BIRTHDAY SONG PLAYER -->
+    <div id="bdayPlayer" style="display:none;background:white;border:2.5px solid #2d2d3a;
+      border-radius:3px;padding:14px 16px;margin:0 auto 20px;max-width:320px;
+      box-shadow:3px 3px 0 #2d2d3a;animation:pgIn .5s ease both;">
+      <div style="font-family:'Caveat',cursive;font-size:13px;color:#aaa;
+        letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px;">🎵 Birthday Song</div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button id="bdaySongBtn" onclick="toggleBdaySong()"
+          style="background:#f0588b;border:2px solid #2d2d3a;border-radius:2px;
+          width:44px;height:44px;color:white;font-size:18px;cursor:pointer;
+          box-shadow:2px 2px 0 #2d2d3a;flex-shrink:0;touch-action:manipulation;
+          -webkit-appearance:none;appearance:none;font-family:'Caveat',cursive;">⏸</button>
+        <div style="flex:1;">
+          <div style="font-family:'Caveat',cursive;font-size:17px;font-weight:700;color:#2d2d3a;">
+            Happy Birthday 🎂</div>
+          <div id="bdayProgress" style="margin-top:6px;height:6px;background:#f5e0e8;
+            border-radius:10px;overflow:hidden;border:1px solid #ddd;">
+            <div id="bdayBar" style="height:100%;width:0%;background:linear-gradient(90deg,#f0588b,#d4b8f0);
+              border-radius:10px;transition:width .4s linear;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="fin-hint" style="margin-top:4px">Tap the cake for your love letter!</p>
     <div class="cake-wrap" onclick="revealLetter()">
-      <svg class="cake-e" width="130" height="130" viewBox="0 0 140 140" fill="none">
+      <svg class="cake-e" width="110" height="110" viewBox="0 0 140 140" fill="none">
         <ellipse cx="70" cy="122" rx="55" ry="10" fill="#ffe8b3" stroke="#2d2d3a" stroke-width="3"/>
         <rect x="20" y="88" width="100" height="34" rx="6" fill="#fff5f8" stroke="#2d2d3a" stroke-width="3"/>
         <path d="M20 88 Q30 78 40 88 Q50 78 60 88 Q70 78 80 88 Q90 78 100 88 Q110 78 120 88" stroke="#f0588b" stroke-width="3.5" fill="none" stroke-linecap="round"/>
         <rect x="35" y="60" width="70" height="30" rx="5" fill="#ffe8b3" stroke="#2d2d3a" stroke-width="3"/>
         <path d="M35 60 Q43 52 50 60 Q58 52 65 60 Q72 52 79 60 Q86 52 93 60 Q100 52 105 60" stroke="#d4b8f0" stroke-width="3" fill="none" stroke-linecap="round"/>
-        <line x1="45" y1="88" x2="45" y2="122" stroke="rgba(240,88,139,.18)" stroke-width="8"/>
-        <line x1="70" y1="88" x2="70" y2="122" stroke="rgba(240,88,139,.18)" stroke-width="8"/>
-        <line x1="95" y1="88" x2="95" y2="122" stroke="rgba(240,88,139,.18)" stroke-width="8"/>
         <rect x="52" y="44" width="8" height="18" rx="3" fill="#f0588b" stroke="#2d2d3a" stroke-width="2.5"/>
         <rect x="66" y="40" width="8" height="22" rx="3" fill="#ffd94a" stroke="#2d2d3a" stroke-width="2.5"/>
         <rect x="80" y="44" width="8" height="18" rx="3" fill="#a8e6cf" stroke="#2d2d3a" stroke-width="2.5"/>
@@ -1078,6 +1113,7 @@ body::before {
         <path d="M102 76 L104 70 L106 76 L112 76 L107 80 L109 86 L104 82 L99 86 L101 80 L96 76Z" fill="#ffd94a" stroke="#2d2d3a" stroke-width="1.5"/>
       </svg>
     </div>
+
     <div class="letter" id="letterBox">
       <h3>Happy Birthday, My Love!</h3>
       <p>
@@ -1086,7 +1122,7 @@ body::before {
         May this year bring you everything you've dreamed of and more. I'll be right by your side, cheering you on, holding your hand, and loving you endlessly through it all.<br><br>
         Happy birthday, my love — here's to many more birthdays, adventures, and memories together.
       </p>
-      <div style="display:-webkit-flex;display:flex;-webkit-justify-content:flex-end;justify-content:flex-end;margin-top:14px;gap:5px">
+      <div style="display:flex;justify-content:flex-end;margin-top:14px;gap:5px">
         <svg width="16" height="14" viewBox="0 0 50 46" fill="none"><path d="M25 42C25 42 4 28 4 14C4 7 9 2 15 2C19 2 23 5 25 9C27 5 31 2 35 2C41 2 46 7 46 14C46 28 25 42 25 42Z" fill="#f0588b" stroke="#2d2d3a" stroke-width="3"/></svg>
         <svg width="20" height="18" viewBox="0 0 50 46" fill="none"><path d="M25 42C25 42 4 28 4 14C4 7 9 2 15 2C19 2 23 5 25 9C27 5 31 2 35 2C41 2 46 7 46 14C46 28 25 42 25 42Z" fill="#f0588b" stroke="#2d2d3a" stroke-width="3"/></svg>
         <svg width="16" height="14" viewBox="0 0 50 46" fill="none"><path d="M25 42C25 42 4 28 4 14C4 7 9 2 15 2C19 2 23 5 25 9C27 5 31 2 35 2C41 2 46 7 46 14C46 28 25 42 25 42Z" fill="#f0588b" stroke="#2d2d3a" stroke-width="3"/></svg>
@@ -1463,373 +1499,185 @@ function closeMBtn() {
 }
 
 /* ============================================================
-   PUZZLE — single-canvas, requestAnimationFrame, lag-free
+   GO TO FINAL — poster reveal + birthday song
    ============================================================ */
-function startPuzzle() {
-  document.getElementById('puzzleBtn').style.display = 'none';
-  var container = document.getElementById('forPuzzle');
-  var COLS = 3, ROWS = 3, N = COLS * ROWS;
+var posterOpened = false;
+var bdaySongPlaying = false;
+var bdaySongSource = null;
+var bdaySongCtx = null;
+var bdaySongStart = 0;
+var bdaySongDuration = 0;
+var bdaySongProgressTimer = null;
 
-  container.innerHTML =
-    '<p id="puzStatus" style="font-family:\'Caveat\',cursive;font-size:17px;' +
-    'color:#f0588b;margin-bottom:8px;font-weight:700;min-height:24px">Loading puzzle... ✨</p>' +
-    '<canvas id="puzCanvas" style="display:block;margin:0 auto;border:3px solid #2d2d3a;' +
-    'border-radius:4px;box-shadow:4px 4px 0 #2d2d3a;touch-action:none;cursor:grab;' +
-    'image-rendering:crisp-edges;"></canvas>';
+function goToFinal() {
+  nav('final');
+  burst();
+  playFireworkVolley(5);
+  /* Auto-open poster after short delay */
+  setTimeout(function(){ openPoster(); }, 600);
+}
 
-  var img = new Image();
-  img.crossOrigin = 'anonymous';
-  img.onerror = function() {
-    container.innerHTML = '<p style="padding:22px;font-family:\'Caveat\',cursive;' +
-      'font-size:18px;color:#f0588b;border:2.5px dashed #f0588b;border-radius:4px">' +
-      'Could not load <b>photopuzzle.jpeg</b>.<br>Make sure it\'s in the same folder!</p>';
-  };
-  img.onload = function() { initPuzzle(img); };
-  img.src = 'photopuzzle.jpeg';
+function openPoster() {
+  if (posterOpened) return;
+  posterOpened = true;
 
-  function initPuzzle(img) {
-    var canvas = document.getElementById('puzCanvas');
-    var ctx    = canvas.getContext('2d');
+  /* Slide curtains apart */
+  var cL = document.getElementById('curtainL');
+  var cR = document.getElementById('curtainR');
+  var lbl = document.getElementById('revealLabel');
+  var img = document.getElementById('posterImg');
 
-    /* Canvas size: grid on top, tray below */
-    var CW  = Math.min(container.offsetWidth - 6 || 294, 294);
-    var PW  = Math.floor(CW / COLS);   /* piece cell width  */
-    var PH  = PW;                       /* square cells      */
-    var GW  = PW * COLS;               /* grid total width  */
-    var GH  = PH * ROWS;               /* grid total height */
-    var TRAY_Y    = GH + 14;           /* tray top y        */
-    var TRAY_H    = PH + 20;           /* tray height       */
-    var CANVAS_H  = TRAY_Y + TRAY_H + 4;
+  if (cL) cL.style.transform = 'translateX(-100%)';
+  if (cR) cR.style.transform = 'translateX(100%)';
+  if (lbl) lbl.style.opacity = '0';
+  if (img) {
+    setTimeout(function(){
+      img.style.opacity = '1';
+      img.style.transition = 'opacity 0.5s ease';
+    }, 400);
+  }
 
-    canvas.width  = GW;
-    canvas.height = CANVAS_H;
+  /* Fireworks on reveal */
+  playFireworkVolley(6);
 
-    /* Pre-render each piece into an offscreen canvas */
-    var offscreens = [];
-    for (var i = 0; i < N; i++) {
-      var r = Math.floor(i / COLS), c = i % COLS;
-      var oc = document.createElement('canvas');
-      oc.width = PW; oc.height = PH;
-      var ox = oc.getContext('2d');
-      ox.drawImage(img,
-        c * img.naturalWidth  / COLS, r * img.naturalHeight / ROWS,
-        img.naturalWidth  / COLS,     img.naturalHeight / ROWS,
-        0, 0, PW, PH
-      );
-      offscreens.push(oc);
+  /* Show and auto-start birthday song */
+  setTimeout(function(){
+    var player = document.getElementById('bdayPlayer');
+    if (player) player.style.display = 'block';
+    startBdaySong();
+  }, 700);
+}
+
+/* Make the poster tappable before it's opened */
+document.addEventListener('DOMContentLoaded', function() {
+  var wrap = document.getElementById('posterRevealWrap');
+  if (wrap) {
+    wrap.style.cursor = 'pointer';
+    wrap.addEventListener('click', function(){ openPoster(); });
+  }
+});
+
+/* ---- Happy Birthday melody via Web Audio ---- */
+/* Notes: C4=261.63, D4=293.66, E4=329.63, F4=349.23,
+          G4=392.00, A4=440.00, Bb4=466.16, C5=523.25 */
+function startBdaySong() {
+  var ctx = getAudioCtx();
+  if (!ctx) return;
+
+  /* Happy Birthday tune — note, duration pairs (freq Hz, beat length) */
+  var BPM = 88;
+  var beat = 60 / BPM;
+  var notes = [
+    /* "Happy Birthday to you" */
+    [392.00, .75],[392.00, .25],[440.00, 1.0],[392.00, 1.0],[523.25, 1.0],[493.88, 2.0],
+    /* "Happy Birthday to you" */
+    [392.00, .75],[392.00, .25],[440.00, 1.0],[392.00, 1.0],[587.33, 1.0],[523.25, 2.0],
+    /* "Happy Birthday dear [name]" */
+    [392.00, .75],[392.00, .25],[784.00, 1.0],[659.25, 1.0],[523.25, 1.0],[493.88, 1.0],[440.00, 2.0],
+    /* "Happy Birthday to you" */
+    [698.46, .75],[698.46, .25],[659.25, 1.0],[523.25, 1.0],[587.33, 1.0],[523.25, 2.5]
+  ];
+
+  var masterGain = ctx.createGain();
+  masterGain.gain.setValueAtTime(0.0, ctx.currentTime);
+  masterGain.gain.linearRampToValueAtTime(0.55, ctx.currentTime + 0.3);
+  masterGain.connect(ctx.destination);
+
+  /* Soft reverb-like convolver simulation with delay */
+  var delayNode = ctx.createDelay(0.3);
+  delayNode.delayTime.value = 0.18;
+  var delayGain = ctx.createGain();
+  delayGain.gain.value = 0.18;
+  masterGain.connect(delayNode);
+  delayNode.connect(delayGain);
+  delayGain.connect(masterGain);
+
+  var totalDur = 0;
+  var t = ctx.currentTime + 0.1;
+  var allOscs = [];
+
+  notes.forEach(function(n) {
+    var freq = n[0], dur = n[1] * beat;
+    if (freq === 0) { t += dur; totalDur += dur; return; }
+
+    /* Main tone — sine + slight detune for warmth */
+    var osc1 = ctx.createOscillator();
+    var osc2 = ctx.createOscillator();
+    var noteGain = ctx.createGain();
+
+    osc1.type = 'sine';
+    osc2.type = 'triangle';
+    osc1.frequency.value = freq;
+    osc2.frequency.value = freq * 1.004; /* slight detune */
+
+    /* ADSR envelope */
+    noteGain.gain.setValueAtTime(0, t);
+    noteGain.gain.linearRampToValueAtTime(0.7, t + 0.02);
+    noteGain.gain.setValueAtTime(0.5, t + dur * 0.6);
+    noteGain.gain.exponentialRampToValueAtTime(0.001, t + dur * 0.92);
+
+    osc1.connect(noteGain);
+    osc2.connect(noteGain);
+    noteGain.connect(masterGain);
+
+    osc1.start(t); osc1.stop(t + dur);
+    osc2.start(t); osc2.stop(t + dur);
+    allOscs.push(osc1, osc2);
+
+    t += dur;
+    totalDur += dur;
+  });
+
+  bdaySongDuration = totalDur;
+  bdaySongStart = ctx.currentTime + 0.1;
+  bdaySongPlaying = true;
+
+  /* Fade out at the end */
+  masterGain.gain.setValueAtTime(0.55, t - 0.5);
+  masterGain.gain.linearRampToValueAtTime(0, t + 0.3);
+
+  /* Progress bar update */
+  clearInterval(bdaySongProgressTimer);
+  bdaySongProgressTimer = setInterval(function() {
+    if (!bdaySongPlaying) return;
+    var ctx2 = getAudioCtx();
+    if (!ctx2) return;
+    var elapsed = ctx2.currentTime - bdaySongStart;
+    var pct = Math.min(elapsed / bdaySongDuration * 100, 100);
+    var bar = document.getElementById('bdayBar');
+    if (bar) bar.style.width = pct + '%';
+    if (pct >= 100) {
+      clearInterval(bdaySongProgressTimer);
+      bdaySongPlaying = false;
+      var btn = document.getElementById('bdaySongBtn');
+      if (btn) btn.textContent = '▶';
     }
+  }, 200);
 
-    /* Piece state */
-    var pieces = [];
-    /* Shuffle tray positions */
-    var traySlots = [];
-    for (var s = 0; s < N; s++) traySlots.push(s);
-    for (var t = traySlots.length - 1; t > 0; t--) {
-      var rr = Math.floor(Math.random() * (t + 1));
-      var tt = traySlots[t]; traySlots[t] = traySlots[rr]; traySlots[rr] = tt;
-    }
-    var trayColCount = COLS;
-    var trayPW = Math.floor(GW / trayColCount);
+  var btn = document.getElementById('bdaySongBtn');
+  if (btn) btn.textContent = '⏸';
+}
 
-    for (var pi = 0; pi < N; pi++) {
-      var slot = traySlots[pi];
-      var tc   = slot % trayColCount;
-      var tr2  = Math.floor(slot / trayColCount);
-      pieces.push({
-        id:      pi,                         /* which image piece */
-        x:       tc * trayPW + (trayPW - PW) / 2,
-        y:       TRAY_Y + 10 + tr2 * (PH + 6),
-        w:       PW, h: PH,
-        placed:  false,
-        scale:   1,
-        targetScale: 1,
-        flash:   0                           /* red-flash timer  */
-      });
-    }
-
-    /* Drag state */
-    var drag = null;   /* { pieceIdx, offX, offY } */
-    var dragX = 0, dragY = 0;
-
-    /* Snap-flash animation when correct */
-    var snapFlash = [];   /* { x,y,w,h, t } */
-
-    /* ---- Input helpers ---- */
-    function getXY(e) {
-      var rect = canvas.getBoundingClientRect();
-      var scaleX = canvas.width  / rect.width;
-      var scaleY = canvas.height / rect.height;
-      if (e.touches) {
-        return {
-          x: (e.touches[0].clientX - rect.left) * scaleX,
-          y: (e.touches[0].clientY - rect.top)  * scaleY
-        };
-      }
-      return {
-        x: (e.clientX - rect.left) * scaleX,
-        y: (e.clientY - rect.top)  * scaleY
-      };
-    }
-    function getXYEnd(e) {
-      var rect = canvas.getBoundingClientRect();
-      var scaleX = canvas.width  / rect.width;
-      var scaleY = canvas.height / rect.height;
-      if (e.changedTouches) {
-        return {
-          x: (e.changedTouches[0].clientX - rect.left) * scaleX,
-          y: (e.changedTouches[0].clientY - rect.top)  * scaleY
-        };
-      }
-      return {
-        x: (e.clientX - rect.left) * scaleX,
-        y: (e.clientY - rect.top)  * scaleY
-      };
-    }
-
-    /* Pick the topmost un-placed piece at a point */
-    function pickPiece(px, py) {
-      for (var i = pieces.length - 1; i >= 0; i--) {
-        var p = pieces[i];
-        if (p.placed) continue;
-        if (px >= p.x && px <= p.x + p.w && py >= p.y && py <= p.y + p.h) return i;
-      }
-      return -1;
-    }
-
-    function onDown(e) {
-      e.preventDefault();
-      var pt  = getXY(e);
-      var idx = pickPiece(pt.x, pt.y);
-      if (idx === -1) return;
-      drag = { idx: idx, offX: pt.x - pieces[idx].x, offY: pt.y - pieces[idx].y };
-      dragX = pt.x; dragY = pt.y;
-      /* Lift piece to top of draw order */
-      var p = pieces.splice(idx, 1)[0];
-      pieces.push(p);
-      drag.idx = pieces.length - 1;
-      p.targetScale = 1.08;
-      canvas.style.cursor = 'grabbing';
-    }
-
-    function onMove(e) {
-      e.preventDefault();
-      if (!drag) return;
-      var pt = getXY(e);
-      dragX = pt.x; dragY = pt.y;
-      var p = pieces[drag.idx];
-      p.x = pt.x - drag.offX;
-      p.y = pt.y - drag.offY;
-    }
-
-    function onUp(e) {
-      if (!drag) return;
-      var pt = getXYEnd(e);
-      var p  = pieces[drag.idx];
-      p.x = pt.x - drag.offX;
-      p.y = pt.y - drag.offY;
-      p.targetScale = 1;
-
-      /* Check if centre of piece is near correct grid slot */
-      var cx = p.x + p.w / 2;
-      var cy = p.y + p.h / 2;
-      var correctCol = p.id % COLS;
-      var correctRow = Math.floor(p.id / COLS);
-      var slotX = correctCol * PW;
-      var slotY = correctRow * PH;
-      var slotCX = slotX + PW / 2;
-      var slotCY = slotY + PH / 2;
-      var dist = Math.sqrt((cx - slotCX) * (cx - slotCX) + (cy - slotCY) * (cy - slotCY));
-
-      if (dist < PW * 0.52) {
-        /* ✅ Snap! */
-        p.x = slotX; p.y = slotY;
-        p.placed = true;
-        snapFlash.push({ x: slotX, y: slotY, w: PW, h: PH, t: 1.0 });
-        playCorrectSound();
-        checkWin();
-      } else {
-        /* ❌ Bounce back — find nearest free tray slot */
-        p.flash = 1.0;
-        var used = {};
-        pieces.forEach(function(q, qi) {
-          if (!q.placed && qi !== drag.idx && q._traySlot !== undefined) used[q._traySlot] = true;
-        });
-        var freeSlot = 0;
-        for (var fs = 0; fs < N; fs++) { if (!used[fs]) { freeSlot = fs; break; } }
-        p._traySlot = freeSlot;
-        var fc = freeSlot % trayColCount;
-        var fr = Math.floor(freeSlot / trayColCount);
-        p.x = fc * trayPW + (trayPW - PW) / 2;
-        p.y = TRAY_Y + 10 + fr * (PH + 6);
-      }
-      drag = null;
-      canvas.style.cursor = 'grab';
-    }
-
-    canvas.addEventListener('mousedown',  onDown);
-    canvas.addEventListener('mousemove',  onMove);
-    canvas.addEventListener('mouseup',    onUp);
-    canvas.addEventListener('touchstart', onDown, { passive: false });
-    canvas.addEventListener('touchmove',  onMove, { passive: false });
-    canvas.addEventListener('touchend',   onUp,   { passive: false });
-
-    /* ---- Check win ---- */
-    var won = false;
-    function checkWin() {
-      var placedCount = pieces.filter(function(p){ return p.placed; }).length;
-      var status = document.getElementById('puzStatus');
-      var left = N - placedCount;
-      if (left > 0) {
-        status.textContent = left + ' piece' + (left > 1 ? 's' : '') + ' left! 🧩';
-      } else if (!won) {
-        won = true;
-        status.textContent = '🎉 Puzzle Complete! Amazing!';
-        playFireworkVolley(6);
-        setTimeout(function(){ nav('final'); burst(); }, 900);
-      }
-    }
-    checkWin(); /* set initial label */
-
-    /* ---- Render loop ---- */
-    var lastTime = 0;
-    function render(ts) {
-      var dt = Math.min((ts - lastTime) / 1000, 0.05); /* seconds, capped */
-      lastTime = ts;
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      /* --- Grid background --- */
-      ctx.fillStyle = '#faf5e9';
-      ctx.fillRect(0, 0, GW, GH);
-
-      /* Grid slot guides */
-      for (var gr = 0; gr < ROWS; gr++) {
-        for (var gc = 0; gc < COLS; gc++) {
-          ctx.strokeStyle = 'rgba(240,88,139,0.25)';
-          ctx.lineWidth = 1;
-          ctx.setLineDash([6, 4]);
-          ctx.strokeRect(gc * PW + 0.5, gr * PH + 0.5, PW - 1, PH - 1);
-        }
-      }
-      ctx.setLineDash([]);
-
-      /* Grid border */
-      ctx.strokeStyle = '#2d2d3a';
-      ctx.lineWidth = 3;
-      ctx.strokeRect(1.5, 1.5, GW - 3, GH - 3);
-
-      /* --- Tray background --- */
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      roundRect(ctx, 0, TRAY_Y, GW, TRAY_H, 4);
-      ctx.fill();
-      ctx.strokeStyle = '#2d2d3a';
-      ctx.lineWidth = 2.5;
-      ctx.stroke();
-
-      /* Tray label */
-      ctx.fillStyle = 'rgba(240,88,139,0.18)';
-      ctx.font = 'bold 13px Patrick Hand, cursive';
-      ctx.textAlign = 'center';
-      ctx.fillText('PIECES', GW / 2, TRAY_Y + 11);
-
-      /* --- Snap flash effects --- */
-      for (var sf = snapFlash.length - 1; sf >= 0; sf--) {
-        var fl = snapFlash[sf];
-        fl.t = Math.max(0, fl.t - dt * 3);
-        if (fl.t <= 0) { snapFlash.splice(sf, 1); continue; }
-        ctx.fillStyle = 'rgba(240,88,139,' + (fl.t * 0.35) + ')';
-        ctx.fillRect(fl.x, fl.y, fl.w, fl.h);
-      }
-
-      /* --- Draw pieces (placed first, then unplaced, dragging last) --- */
-      /* Placed pieces */
-      pieces.forEach(function(p) {
-        if (!p.placed) return;
-        ctx.drawImage(offscreens[p.id], p.x, p.y, p.w, p.h);
-        /* thin pink border */
-        ctx.strokeStyle = 'rgba(240,88,139,0.7)';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(p.x + 1, p.y + 1, p.w - 2, p.h - 2);
-      });
-
-      /* Un-placed pieces (smooth scale lerp) */
-      pieces.forEach(function(p, pi) {
-        if (p.placed) return;
-        var isDragging = drag && drag.idx === pi;
-
-        /* Smooth scale */
-        p.scale += (p.targetScale - p.scale) * Math.min(dt * 12, 1);
-
-        /* Flash red timer */
-        if (p.flash > 0) p.flash = Math.max(0, p.flash - dt * 4);
-
-        var s  = p.scale;
-        var cx2 = p.x + p.w / 2;
-        var cy2 = p.y + p.h / 2;
-        var dw = p.w * s, dh = p.h * s;
-
-        ctx.save();
-        ctx.translate(cx2, cy2);
-        ctx.scale(s, s);
-
-        /* Shadow for dragging piece */
-        if (isDragging) {
-          ctx.shadowColor = 'rgba(45,45,58,0.35)';
-          ctx.shadowBlur  = 12;
-          ctx.shadowOffsetX = 4;
-          ctx.shadowOffsetY = 4;
-        }
-
-        ctx.drawImage(offscreens[p.id], -p.w / 2, -p.h / 2, p.w, p.h);
-        ctx.shadowColor = 'transparent';
-        ctx.shadowBlur  = 0;
-
-        /* Border */
-        if (p.flash > 0) {
-          ctx.strokeStyle = 'rgba(255,107,107,' + p.flash + ')';
-          ctx.lineWidth = 3 / s;
-        } else if (isDragging) {
-          ctx.strokeStyle = '#f0588b';
-          ctx.lineWidth = 2.5 / s;
-        } else {
-          ctx.strokeStyle = '#2d2d3a';
-          ctx.lineWidth = 2 / s;
-        }
-        ctx.strokeRect(-p.w / 2, -p.h / 2, p.w, p.h);
-
-        ctx.restore();
-      });
-
-      requestAnimationFrame(render);
-    }
-
-    /* roundRect helper (fallback for older browsers) */
-    function roundRect(ctx, x, y, w, h, r) {
-      ctx.beginPath();
-      ctx.moveTo(x + r, y);
-      ctx.lineTo(x + w - r, y);
-      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-      ctx.lineTo(x + w, y + h - r);
-      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-      ctx.lineTo(x + r, y + h);
-      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-      ctx.lineTo(x, y + r);
-      ctx.quadraticCurveTo(x, y, x + r, y);
-      ctx.closePath();
-    }
-
-    requestAnimationFrame(render);
-    checkWin();
+function toggleBdaySong() {
+  if (bdaySongPlaying) {
+    /* Can't pause Web Audio mid-melody cleanly — restart on next play */
+    bdaySongPlaying = false;
+    clearInterval(bdaySongProgressTimer);
+    var btn = document.getElementById('bdaySongBtn');
+    if (btn) btn.textContent = '▶';
+    var bar = document.getElementById('bdayBar');
+    if (bar) bar.style.width = '0%';
+  } else {
+    startBdaySong();
   }
 }
 
 /* ============================================================
-   FINAL
+   FINAL — reveal love letter
    ============================================================ */
 function revealLetter() {
   burst();
-  playFireworkVolley(7);
+  playFireworkVolley(4);
   var lb = document.getElementById('letterBox');
   lb.style.display = 'block';
   setTimeout(function(){

@@ -8,7 +8,6 @@
 <title>Our Story 💜</title>
 <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
 <style>
-/* ===== FIX: All CSS variables use -- (double hyphen), not – (en-dash) ===== */
 :root {
   --pink: #f0588b;
   --pink2: #ff85a8;
@@ -31,21 +30,16 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-html {
-  /* FIX: Use 100% height as base, -webkit-fill-available as enhancement */
-  height: 100%;
-}
+html { height: 100%; }
 
 body {
   font-family: 'Patrick Hand', cursive;
   background: var(--cream);
-  /* FIX: Proper iOS height handling */
   min-height: 100%;
   min-height: -webkit-fill-available;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   position: relative;
-  /* FIX: Prevent iOS overscroll bounce from breaking layout */
   overscroll-behavior: none;
 }
 
@@ -85,7 +79,6 @@ body::before {
 .doodle-bg svg {
   position: absolute;
   opacity: 0.1;
-  /* FIX: Use var() correctly */
   animation: floatD var(--d, 9s) ease-in-out infinite;
   animation-delay: var(--dl, 0s);
 }
@@ -103,7 +96,6 @@ body::before {
   margin: 0 auto;
   padding: 36px 16px 120px;
   min-height: 100vh;
-  /* FIX: Safe area padding for iOS notch/home bar */
   padding-bottom: calc(120px + env(safe-area-inset-bottom, 0px));
 }
 .section.active {
@@ -118,8 +110,6 @@ body::before {
 /* ===== LOGIN ===== */
 #loginPage {
   position: fixed;
-  inset: 0;
-  /* FIX: Use explicit top/left/right/bottom for older iOS */
   top: 0; left: 0; right: 0; bottom: 0;
   z-index: 999;
   background: var(--cream);
@@ -202,7 +192,7 @@ body::before {
   border-radius: 3px;
   background: white;
   font-family: 'Patrick Hand', cursive;
-  font-size: 16px; /* FIX: Keep 16px to prevent iOS auto-zoom */
+  font-size: 16px;
   color: var(--navy);
   outline: none;
   -webkit-appearance: none;
@@ -237,7 +227,6 @@ body::before {
   -webkit-appearance: none;
   appearance: none;
   text-decoration: none;
-  /* FIX: Prevent double-tap zoom on buttons */
   touch-action: manipulation;
 }
 .btn-p {
@@ -399,7 +388,6 @@ body::before {
   flex-wrap: wrap;
   gap: 12px;
 }
-/* FIX: Use flex instead of grid for better Safari compatibility */
 .opts .opt {
   -webkit-flex: 1 1 calc(50% - 6px);
   flex: 1 1 calc(50% - 6px);
@@ -422,9 +410,7 @@ body::before {
   -webkit-appearance: none;
   appearance: none;
   line-height: 1.3;
-  /* FIX: Prevent double-tap zoom */
   touch-action: manipulation;
-  /* FIX: Prevent text selection on tap */
   -webkit-user-select: none;
   user-select: none;
 }
@@ -471,7 +457,6 @@ body::before {
   gap: 14px;
   margin-bottom: 28px;
 }
-/* FIX: Use flex instead of grid for older Safari */
 .tile {
   -webkit-flex: 1 1 calc(33.333% - 10px);
   flex: 1 1 calc(33.333% - 10px);
@@ -520,7 +505,6 @@ body::before {
 /* ===== MODALS ===== */
 .overlay {
   position: fixed;
-  /* FIX: Explicit positioning for older iOS */
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(45,45,58,.55);
   z-index: 500;
@@ -529,7 +513,6 @@ body::before {
   justify-content: center;
   -webkit-align-items: flex-end;
   align-items: flex-end;
-  /* FIX: Safe area for home bar */
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 .overlay.open {
@@ -551,10 +534,8 @@ body::before {
   box-shadow: 0 -6px 0 var(--navy);
   animation: mUp .35s cubic-bezier(.4,0,.2,1);
   max-height: 85vh;
-  /* FIX: Proper iOS momentum scrolling */
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
-  /* FIX: Prevent touch events from bubbling to overlay */
   overscroll-behavior: contain;
 }
 .mbox::before {
@@ -723,7 +704,6 @@ body::before {
   width: 100%;
   max-width: 320px;
   margin: 0 auto 24px;
-  /* FIX: Allow touch events for puzzle drag */
   touch-action: none;
   -webkit-user-select: none;
   user-select: none;
@@ -844,7 +824,6 @@ body::before {
 /* ===== BACK BTN ===== */
 .back-btn {
   position: fixed;
-  /* FIX: Proper safe area for iOS home bar */
   bottom: calc(28px + env(safe-area-inset-bottom, 0px));
   right: 20px;
   width: 48px;
@@ -873,7 +852,61 @@ body::before {
   display: flex;
 }
 
-/* FIX: Aspect ratio polyfill for older Safari */
+/* ===== MUSIC INDICATOR ===== */
+.music-indicator {
+  position: fixed;
+  top: 28px;
+  right: 16px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--paper);
+  border: 2px solid var(--navy);
+  border-radius: 20px;
+  padding: 5px 12px 5px 8px;
+  font-family: 'Caveat', cursive;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--navy);
+  box-shadow: 2px 2px 0 var(--navy);
+  cursor: pointer;
+  touch-action: manipulation;
+  opacity: 0;
+  transform: translateY(-8px);
+  transition: opacity .5s ease, transform .5s ease;
+}
+.music-indicator.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.music-indicator.muted { opacity: 0.5; }
+.music-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 14px;
+}
+.music-bars span {
+  display: block;
+  width: 3px;
+  background: var(--pink);
+  border-radius: 2px;
+  animation: barAnim var(--s, .6s) ease-in-out infinite alternate;
+}
+.music-bars span:nth-child(1) { height: 6px; --s: .5s; }
+.music-bars span:nth-child(2) { height: 12px; --s: .7s; animation-delay: .1s; }
+.music-bars span:nth-child(3) { height: 8px; --s: .45s; animation-delay: .2s; }
+.music-bars span:nth-child(4) { height: 10px; --s: .65s; animation-delay: .05s; }
+@keyframes barAnim {
+  from { transform: scaleY(0.3); }
+  to   { transform: scaleY(1); }
+}
+.music-indicator.muted .music-bars span {
+  animation: none;
+  transform: scaleY(0.3);
+}
+
 @supports not (aspect-ratio: 1) {
   .tile::after { content: ''; display: block; padding-top: 100%; }
   .pol-img::after { content: ''; display: block; padding-top: 100%; }
@@ -884,6 +917,14 @@ body::before {
 
 <div class="tape-strip top"></div>
 <div class="tape-strip bottom"></div>
+
+<!-- Music indicator pill -->
+<div class="music-indicator" id="musicIndicator" onclick="toggleBgMusic()">
+  <div class="music-bars">
+    <span></span><span></span><span></span><span></span>
+  </div>
+  Music
+</div>
 
 <!-- Floating doodles -->
 <div class="doodle-bg">
@@ -915,7 +956,7 @@ body::before {
   </div>
 </div>
 
-<!-- FIX: Audio element - iOS needs user interaction before play -->
+<!-- Background music -->
 <audio id="bgMusic" loop preload="none">
   <source src="JumpAroundMode.mp3" type="audio/mpeg">
 </audio>
@@ -1065,31 +1106,264 @@ body::before {
 <button class="back-btn" id="backBtn" onclick="goBack()">↩</button>
 
 <script>
-/* ---- LOGIN ---- */
-function enterSite() {
-  var lp = document.getElementById('loginPage');
-  lp.classList.add('hide');
-  setTimeout(function(){ lp.style.display = 'none'; }, 700);
-  // FIX: Audio on iOS requires user interaction — this button tap IS the interaction
+/* ============================================================
+   AUDIO ENGINE  — Web Audio API for fireworks + fade-in music
+   ============================================================ */
+var audioCtx = null;
+var bgMusicNode = null;
+var bgGain = null;
+var bgMuted = false;
+var bgStarted = false;
+
+function getAudioCtx() {
+  if (!audioCtx) {
+    try {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    } catch(e) { return null; }
+  }
+  // Resume if suspended (iOS requires user gesture)
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume().catch(function(){});
+  }
+  return audioCtx;
+}
+
+/* ---- Smooth BG music fade-in ---- */
+function startBgMusic() {
   var m = document.getElementById('bgMusic');
-  m.volume = 0.35;
-  // FIX: Load audio first (important for iOS), then play
+  m.volume = 0;
   m.load();
-  var playPromise = m.play();
-  if (playPromise !== undefined) {
-    playPromise.catch(function(e) {
-      // iOS may still block autoplay — silently fail, music is optional
-      console.log('Audio play blocked:', e);
+  var playProm = m.play();
+  if (playProm !== undefined) {
+    playProm.then(function() {
+      // Fade in over 2.5 seconds
+      var startTime = performance.now();
+      var targetVol = 0.38;
+      var duration = 2500;
+      function fadeStep() {
+        var elapsed = performance.now() - startTime;
+        var t = Math.min(elapsed / duration, 1);
+        // ease-out cubic
+        var ease = 1 - Math.pow(1 - t, 3);
+        m.volume = ease * targetVol;
+        if (t < 1) requestAnimationFrame(fadeStep);
+      }
+      requestAnimationFrame(fadeStep);
+      bgStarted = true;
+      showMusicIndicator();
+    }).catch(function(e) {
+      console.log('Audio blocked:', e);
     });
   }
 }
 
-/* ---- NAV ---- */
+function showMusicIndicator() {
+  setTimeout(function() {
+    var ind = document.getElementById('musicIndicator');
+    ind.classList.add('visible');
+  }, 600);
+}
+
+function toggleBgMusic() {
+  var m = document.getElementById('bgMusic');
+  var ind = document.getElementById('musicIndicator');
+  if (bgMuted) {
+    // Fade back in
+    bgMuted = false;
+    ind.classList.remove('muted');
+    m.play().catch(function(){});
+    var startVol = m.volume;
+    var start = performance.now();
+    var dur = 800;
+    function fadeIn() {
+      var t = Math.min((performance.now() - start) / dur, 1);
+      m.volume = startVol + (0.38 - startVol) * (1 - Math.pow(1-t, 3));
+      if (t < 1) requestAnimationFrame(fadeIn);
+    }
+    requestAnimationFrame(fadeIn);
+  } else {
+    // Fade out then pause
+    bgMuted = true;
+    ind.classList.add('muted');
+    var startVol2 = m.volume;
+    var start2 = performance.now();
+    var dur2 = 600;
+    function fadeOut() {
+      var t = Math.min((performance.now() - start2) / dur2, 1);
+      m.volume = startVol2 * (1 - t);
+      if (t < 1) { requestAnimationFrame(fadeOut); }
+      else { m.pause(); }
+    }
+    requestAnimationFrame(fadeOut);
+  }
+}
+
+/* ---- FIREWORK SOUND via Web Audio ---- */
+/*
+  Each firework = launch whistle + burst pop + shimmer
+*/
+function playFireworkSound(variant) {
+  var ctx = getAudioCtx();
+  if (!ctx) return;
+
+  var now = ctx.currentTime;
+  variant = variant || Math.floor(Math.random() * 4);
+
+  /* --- Whistle: rising pitch sweep --- */
+  var whistleOsc = ctx.createOscillator();
+  var whistleGain = ctx.createGain();
+  whistleOsc.type = 'sine';
+  whistleOsc.frequency.setValueAtTime(400 + Math.random() * 200, now);
+  whistleOsc.frequency.exponentialRampToValueAtTime(1800 + Math.random() * 600, now + 0.32);
+  whistleGain.gain.setValueAtTime(0.18, now);
+  whistleGain.gain.exponentialRampToValueAtTime(0.001, now + 0.34);
+  whistleOsc.connect(whistleGain);
+  whistleGain.connect(ctx.destination);
+  whistleOsc.start(now);
+  whistleOsc.stop(now + 0.35);
+
+  /* --- Pop burst: noise explosion --- */
+  var bufLen = ctx.sampleRate * 0.18;
+  var buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
+  var data = buf.getChannelData(0);
+  for (var i = 0; i < bufLen; i++) {
+    data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufLen, 1.5);
+  }
+  var noiseSource = ctx.createBufferSource();
+  noiseSource.buffer = buf;
+
+  var bandpass = ctx.createBiquadFilter();
+  var burstFreq = [200, 350, 500, 700][variant] || 350;
+  bandpass.type = 'bandpass';
+  bandpass.frequency.value = burstFreq;
+  bandpass.Q.value = 0.8;
+
+  var burstGain = ctx.createGain();
+  var burstVol = 0.55 + Math.random() * 0.25;
+  burstGain.gain.setValueAtTime(burstVol, now + 0.30);
+  burstGain.gain.exponentialRampToValueAtTime(0.001, now + 0.55);
+
+  noiseSource.connect(bandpass);
+  bandpass.connect(burstGain);
+  burstGain.connect(ctx.destination);
+  noiseSource.start(now + 0.30);
+  noiseSource.stop(now + 0.56);
+
+  /* --- Shimmer: high-freq tinkle sparkles --- */
+  var sparkCount = 3 + Math.floor(Math.random() * 3);
+  for (var s = 0; s < sparkCount; s++) {
+    (function(si) {
+      var delay = now + 0.32 + si * 0.045 + Math.random() * 0.04;
+      var sparkOsc = ctx.createOscillator();
+      var sparkGain = ctx.createGain();
+      sparkOsc.type = 'sine';
+      var sparkFreq = 2400 + Math.random() * 2000;
+      sparkOsc.frequency.setValueAtTime(sparkFreq, delay);
+      sparkOsc.frequency.exponentialRampToValueAtTime(sparkFreq * 0.7, delay + 0.18);
+      sparkGain.gain.setValueAtTime(0.10, delay);
+      sparkGain.gain.exponentialRampToValueAtTime(0.001, delay + 0.20);
+      sparkOsc.connect(sparkGain);
+      sparkGain.connect(ctx.destination);
+      sparkOsc.start(delay);
+      sparkOsc.stop(delay + 0.22);
+    })(s);
+  }
+
+  /* --- Low boom (for big bursts) --- */
+  if (variant === 0 || variant === 2) {
+    var boomBuf = ctx.createBuffer(1, Math.floor(ctx.sampleRate * 0.3), ctx.sampleRate);
+    var bd = boomBuf.getChannelData(0);
+    for (var b = 0; b < bd.length; b++) {
+      bd[b] = (Math.random() * 2 - 1) * Math.exp(-b / (ctx.sampleRate * 0.05));
+    }
+    var boomSrc = ctx.createBufferSource();
+    boomSrc.buffer = boomBuf;
+    var boomFilter = ctx.createBiquadFilter();
+    boomFilter.type = 'lowpass';
+    boomFilter.frequency.value = 120;
+    var boomGain = ctx.createGain();
+    boomGain.gain.setValueAtTime(0.45, now + 0.28);
+    boomGain.gain.exponentialRampToValueAtTime(0.001, now + 0.6);
+    boomSrc.connect(boomFilter);
+    boomFilter.connect(boomGain);
+    boomGain.connect(ctx.destination);
+    boomSrc.start(now + 0.28);
+    boomSrc.stop(now + 0.62);
+  }
+}
+
+/* Play a staggered volley of firework sounds */
+function playFireworkVolley(count) {
+  count = count || 5;
+  for (var i = 0; i < count; i++) {
+    (function(idx) {
+      var delay = idx * (120 + Math.random() * 180);
+      setTimeout(function() {
+        playFireworkSound(idx % 4);
+      }, delay);
+    })(i);
+  }
+}
+
+/* Short single pop for correct answer */
+function playCorrectSound() {
+  var ctx = getAudioCtx();
+  if (!ctx) return;
+  var now = ctx.currentTime;
+  var osc = ctx.createOscillator();
+  var gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(660, now);
+  osc.frequency.exponentialRampToValueAtTime(880, now + 0.08);
+  gain.gain.setValueAtTime(0.18, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(now);
+  osc.stop(now + 0.2);
+}
+
+/* Wrong answer buzz */
+function playWrongSound() {
+  var ctx = getAudioCtx();
+  if (!ctx) return;
+  var now = ctx.currentTime;
+  var osc = ctx.createOscillator();
+  var gain = ctx.createGain();
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(180, now);
+  osc.frequency.exponentialRampToValueAtTime(110, now + 0.22);
+  gain.gain.setValueAtTime(0.12, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(now);
+  osc.stop(now + 0.26);
+}
+
+/* ============================================================
+   LOGIN
+   ============================================================ */
+function enterSite() {
+  getAudioCtx(); // unlock audio context on iOS via user gesture
+  var lp = document.getElementById('loginPage');
+  lp.classList.add('hide');
+  setTimeout(function(){ lp.style.display = 'none'; }, 700);
+
+  // Play a small welcome firework burst on login
+  setTimeout(function() { playFireworkVolley(3); }, 300);
+
+  // Start bg music with smooth fade-in
+  startBgMusic();
+}
+
+/* ============================================================
+   NAV
+   ============================================================ */
 var hist = [];
 function showSec(id) {
   document.querySelectorAll('.section').forEach(function(s){ s.classList.remove('active'); });
   document.getElementById(id).classList.add('active');
-  // FIX: Use scrollTo with behavior check for older Safari
   try { window.scrollTo({ top: 0, behavior: 'smooth' }); }
   catch(e) { window.scrollTo(0, 0); }
   var bb = document.getElementById('backBtn');
@@ -1104,7 +1378,9 @@ function nav(to) {
   showSec(to);
 }
 
-/* ---- QUESTIONS ---- */
+/* ============================================================
+   QUESTIONS
+   ============================================================ */
 var Qs = [
   { q: "Where did we first meet?",        a: ["School","Instagram","Cafe","Mall"],   c: 1 },
   { q: "Who said I love you first?",       a: ["Me","You"],                           c: 0 },
@@ -1127,14 +1403,20 @@ function loadQ() {
 }
 
 function checkA(el, i) {
-  // FIX: Prevent multiple rapid taps
   if (el.dataset.busy) return;
   el.dataset.busy = '1';
   if (i === Qs[qi].c) {
+    playCorrectSound();
     qi++;
-    if (qi < Qs.length) { loadQ(); }
-    else { nav('scrapbook'); }
+    if (qi < Qs.length) {
+      loadQ();
+    } else {
+      // All done — mini fireworks before scrapbook
+      playFireworkVolley(4);
+      setTimeout(function(){ nav('scrapbook'); }, 350);
+    }
   } else {
+    playWrongSound();
     el.classList.add('wrong');
     setTimeout(function(){
       el.classList.remove('wrong');
@@ -1143,7 +1425,9 @@ function checkA(el, i) {
   }
 }
 
-/* ---- MODAL CONTENT ---- */
+/* ============================================================
+   MODAL CONTENT
+   ============================================================ */
 var MC = {
   music: '<div style="margin-bottom:10px"><svg width="50" height="50" viewBox="0 0 80 80" fill="none"><circle cx="40" cy="40" r="36" fill="#ffe8b3" stroke="#2d2d3a" stroke-width="3"/><circle cx="40" cy="40" r="14" fill="white" stroke="#2d2d3a" stroke-width="2.5"/><circle cx="40" cy="40" r="5" fill="#f0588b" stroke="#2d2d3a" stroke-width="2"/><path d="M56 20 Q70 22 68 36" stroke="#2d2d3a" stroke-width="2.5" stroke-linecap="round" fill="none"/></svg></div><h3>Our Song</h3><p>Every note reminds me of you. Close your eyes and feel it.</p><div class="music-player"><svg width="34" height="34" viewBox="0 0 80 80" fill="none"><circle cx="40" cy="40" r="36" fill="#ffe8b3" stroke="#2d2d3a" stroke-width="3"/><circle cx="40" cy="40" r="5" fill="#f0588b" stroke="#2d2d3a" stroke-width="2"/></svg><div class="mp-info"><div class="mp-title">Our Favourite Song</div><div class="mp-sub">Playing just for you</div></div><button class="mp-btn" onclick="toggleMusic(this)">▶</button></div>',
   photos: '<h3>Our Memories</h3><p style="margin-bottom:10px">Every photo holds a moment I never want to forget.</p><div class="pol-grid"><div class="pol" style="--r:-3deg"><div class="pol-img"><img src="poster1.jpeg" onerror="this.style.display=\'none\'"></div><div class="pol-cap">Add Text</div></div><div class="pol" style="--r:2deg"><div class="pol-img"><svg width="44" height="44" viewBox="0 0 50 46" fill="none"><path d="M25 42C25 42 4 28 4 14C4 7 9 2 15 2C19 2 23 5 25 9C27 5 31 2 35 2C41 2 46 7 46 14C46 28 25 42 25 42Z" fill="#f0588b" stroke="#2d2d3a" stroke-width="3"/></svg></div><div class="pol-cap">Add Text</div></div><div class="pol" style="--r:-2deg"><div class="pol-img"><svg width="40" height="40" viewBox="0 0 80 80" fill="none"><polygon points="40,6 48,28 72,28 53,44 60,66 40,52 20,66 27,44 8,28 32,28" fill="#ffd94a" stroke="#2d2d3a" stroke-width="3"/></svg></div><div class="pol-cap">Add Text</div></div><div class="pol" style="--r:3deg"><div class="pol-img"><svg width="40" height="40" viewBox="0 0 80 80" fill="none"><circle cx="40" cy="32" r="22" fill="#a8e6cf" stroke="#2d2d3a" stroke-width="3"/><path d="M24 60 C24 46 56 46 56 60" fill="#a8e6cf" stroke="#2d2d3a" stroke-width="3"/></svg></div><div class="pol-cap">Add Text</div></div><div class="pol" style="--r:-1deg"><div class="pol-img"><svg width="40" height="40" viewBox="0 0 80 80" fill="none"><path d="M40 12 Q52 8 56 20 Q68 22 64 34 Q72 42 62 48 Q62 60 50 60 Q44 68 36 60 Q24 60 18 50 Q8 44 14 34 Q10 22 22 20 Q26 8 40 12Z" fill="#d4b8f0" stroke="#2d2d3a" stroke-width="2.5"/></svg></div><div class="pol-cap">Add Text</div></div><div class="pol" style="--r:2deg"><div class="pol-img"><svg width="40" height="40" viewBox="0 0 80 80" fill="none"><rect x="14" y="20" width="52" height="42" rx="4" fill="#ff85a8" stroke="#2d2d3a" stroke-width="3"/><path d="M14 22 L40 44 L66 22" stroke="white" stroke-width="3" stroke-linecap="round" fill="none"/></svg></div><div class="pol-cap">Add Text</div></div></div>',
@@ -1168,7 +1452,6 @@ function openM(t) {
   document.getElementById('mContent').innerHTML = MC[t];
   var ov = document.getElementById('ov');
   ov.classList.add('open');
-  // FIX: Prevent body scroll when modal is open (iOS fix)
   document.body.style.overflow = 'hidden';
 }
 function closeM(e) {
@@ -1176,11 +1459,12 @@ function closeM(e) {
 }
 function closeMBtn() {
   document.getElementById('ov').classList.remove('open');
-  // FIX: Re-enable body scroll
   document.body.style.overflow = '';
 }
 
-/* ---- PUZZLE ---- */
+/* ============================================================
+   PUZZLE
+   ============================================================ */
 function startPuzzle() {
   document.getElementById('puzzleBtn').style.display = 'none';
   try {
@@ -1191,29 +1475,35 @@ function startPuzzle() {
       piecesY: 3,
       pieceSize: 100,
       onComplete: function() {
+        playFireworkVolley(6);
         setTimeout(function(){ nav('final'); burst(); }, 400);
       }
     });
   } catch(e) {
-    // FIX: Friendly fallback if puzzle library fails
     var fp = document.getElementById('forPuzzle');
     fp.innerHTML = '<p style="padding:28px;font-family:\'Caveat\',cursive;font-size:22px;color:#f0588b;border:2.5px dashed #f0588b;border-radius:4px;margin-bottom:16px">Puzzle unlocked — you did it! 🎉</p>';
+    playFireworkVolley(5);
     setTimeout(function(){ nav('final'); burst(); }, 1800);
   }
 }
 
-/* ---- FINAL ---- */
+/* ============================================================
+   FINAL
+   ============================================================ */
 function revealLetter() {
   burst();
+  playFireworkVolley(7);
   var lb = document.getElementById('letterBox');
   lb.style.display = 'block';
-  // FIX: Scroll to letter smoothly on iOS
   setTimeout(function(){
     try { lb.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
     catch(e) { lb.scrollIntoView(); }
   }, 100);
 }
 
+/* ============================================================
+   CONFETTI BURST
+   ============================================================ */
 var CC = ['#f0588b','#ffd94a','#d4b8f0','#a8e6cf','#ff85a8','#ffe8b3','#6baed6','#ff6b6b'];
 function burst() {
   for (var i = 0; i < 70; i++) {
@@ -1242,7 +1532,9 @@ function burst() {
   }
 }
 
-// FIX: Stop body scroll when overlay is touched (iOS momentum scroll leak)
+/* ============================================================
+   PREVENT BODY SCROLL BLEED ON iOS MODAL
+   ============================================================ */
 document.getElementById('mbox').addEventListener('touchmove', function(e){
   e.stopPropagation();
 }, { passive: true });

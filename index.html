@@ -1463,222 +1463,364 @@ function closeMBtn() {
 }
 
 /* ============================================================
-   PUZZLE — fully custom canvas drag-and-drop, no library
+   PUZZLE — single-canvas, requestAnimationFrame, lag-free
    ============================================================ */
 function startPuzzle() {
   document.getElementById('puzzleBtn').style.display = 'none';
-
-  var COLS = 3, ROWS = 3;
   var container = document.getElementById('forPuzzle');
+  var COLS = 3, ROWS = 3, N = COLS * ROWS;
 
-  /* --- Build wrapper --- */
   container.innerHTML =
-    '<p id="puzStatus" style="font-family:\'Caveat\',cursive;font-size:17px;color:#f0588b;margin-bottom:10px;font-weight:700">Drag pieces into the grid! 🧩</p>' +
-    '<div id="puzWrap" style="position:relative;touch-action:none;user-select:none;-webkit-user-select:none"></div>' +
-    '<div id="puzTray" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:14px;padding:12px;background:white;border:2.5px solid #2d2d3a;border-radius:4px;box-shadow:3px 3px 0 #2d2d3a;min-height:80px"></div>';
+    '<p id="puzStatus" style="font-family:\'Caveat\',cursive;font-size:17px;' +
+    'color:#f0588b;margin-bottom:8px;font-weight:700;min-height:24px">Loading puzzle... ✨</p>' +
+    '<canvas id="puzCanvas" style="display:block;margin:0 auto;border:3px solid #2d2d3a;' +
+    'border-radius:4px;box-shadow:4px 4px 0 #2d2d3a;touch-action:none;cursor:grab;' +
+    'image-rendering:crisp-edges;"></canvas>';
 
   var img = new Image();
   img.crossOrigin = 'anonymous';
-  img.onload = function() { buildPuzzle(img); };
   img.onerror = function() {
-    container.innerHTML = '<p style="padding:24px;font-family:\'Caveat\',cursive;font-size:20px;color:#f0588b;border:2.5px dashed #f0588b;border-radius:4px">Could not load puzzle image.<br>Make sure <b>photopuzzle.jpeg</b> is in the same folder!</p>';
+    container.innerHTML = '<p style="padding:22px;font-family:\'Caveat\',cursive;' +
+      'font-size:18px;color:#f0588b;border:2.5px dashed #f0588b;border-radius:4px">' +
+      'Could not load <b>photopuzzle.jpeg</b>.<br>Make sure it\'s in the same folder!</p>';
   };
+  img.onload = function() { initPuzzle(img); };
   img.src = 'photopuzzle.jpeg';
 
-  function buildPuzzle(img) {
-    var wrap = document.getElementById('puzWrap');
-    var tray = document.getElementById('puzTray');
-    var W = Math.min(container.offsetWidth || 300, 300);
-    var pw = Math.floor(W / COLS);   /* piece width */
-    var ph = pw;                      /* square pieces */
-    var totalW = pw * COLS;
-    var totalH = ph * ROWS;
+  function initPuzzle(img) {
+    var canvas = document.getElementById('puzCanvas');
+    var ctx    = canvas.getContext('2d');
 
-    /* --- Draw grid background --- */
-    wrap.style.width  = totalW + 'px';
-    wrap.style.height = totalH + 'px';
-    wrap.style.margin = '0 auto';
-    wrap.style.border = '3px solid #2d2d3a';
-    wrap.style.boxShadow = '4px 4px 0 #2d2d3a';
-    wrap.style.background = '#faf5e9';
-    wrap.style.borderRadius = '4px';
-    wrap.style.overflow = 'visible';
+    /* Canvas size: grid on top, tray below */
+    var CW  = Math.min(container.offsetWidth - 6 || 294, 294);
+    var PW  = Math.floor(CW / COLS);   /* piece cell width  */
+    var PH  = PW;                       /* square cells      */
+    var GW  = PW * COLS;               /* grid total width  */
+    var GH  = PH * ROWS;               /* grid total height */
+    var TRAY_Y    = GH + 14;           /* tray top y        */
+    var TRAY_H    = PH + 20;           /* tray height       */
+    var CANVAS_H  = TRAY_Y + TRAY_H + 4;
 
-    /* Draw faint grid slots */
-    for (var r = 0; r < ROWS; r++) {
-      for (var c = 0; c < COLS; c++) {
-        var slot = document.createElement('div');
-        slot.style.cssText = 'position:absolute;width:'+pw+'px;height:'+ph+'px;' +
-          'left:'+(c*pw)+'px;top:'+(r*ph)+'px;' +
-          'border:1px dashed rgba(240,88,139,0.3);box-sizing:border-box;' +
-          'background:rgba(240,88,139,0.04);';
-        slot.dataset.row = r;
-        slot.dataset.col = c;
-        slot.classList.add('puz-slot');
-        wrap.appendChild(slot);
+    canvas.width  = GW;
+    canvas.height = CANVAS_H;
+
+    /* Pre-render each piece into an offscreen canvas */
+    var offscreens = [];
+    for (var i = 0; i < N; i++) {
+      var r = Math.floor(i / COLS), c = i % COLS;
+      var oc = document.createElement('canvas');
+      oc.width = PW; oc.height = PH;
+      var ox = oc.getContext('2d');
+      ox.drawImage(img,
+        c * img.naturalWidth  / COLS, r * img.naturalHeight / ROWS,
+        img.naturalWidth  / COLS,     img.naturalHeight / ROWS,
+        0, 0, PW, PH
+      );
+      offscreens.push(oc);
+    }
+
+    /* Piece state */
+    var pieces = [];
+    /* Shuffle tray positions */
+    var traySlots = [];
+    for (var s = 0; s < N; s++) traySlots.push(s);
+    for (var t = traySlots.length - 1; t > 0; t--) {
+      var rr = Math.floor(Math.random() * (t + 1));
+      var tt = traySlots[t]; traySlots[t] = traySlots[rr]; traySlots[rr] = tt;
+    }
+    var trayColCount = COLS;
+    var trayPW = Math.floor(GW / trayColCount);
+
+    for (var pi = 0; pi < N; pi++) {
+      var slot = traySlots[pi];
+      var tc   = slot % trayColCount;
+      var tr2  = Math.floor(slot / trayColCount);
+      pieces.push({
+        id:      pi,                         /* which image piece */
+        x:       tc * trayPW + (trayPW - PW) / 2,
+        y:       TRAY_Y + 10 + tr2 * (PH + 6),
+        w:       PW, h: PH,
+        placed:  false,
+        scale:   1,
+        targetScale: 1,
+        flash:   0                           /* red-flash timer  */
+      });
+    }
+
+    /* Drag state */
+    var drag = null;   /* { pieceIdx, offX, offY } */
+    var dragX = 0, dragY = 0;
+
+    /* Snap-flash animation when correct */
+    var snapFlash = [];   /* { x,y,w,h, t } */
+
+    /* ---- Input helpers ---- */
+    function getXY(e) {
+      var rect = canvas.getBoundingClientRect();
+      var scaleX = canvas.width  / rect.width;
+      var scaleY = canvas.height / rect.height;
+      if (e.touches) {
+        return {
+          x: (e.touches[0].clientX - rect.left) * scaleX,
+          y: (e.touches[0].clientY - rect.top)  * scaleY
+        };
+      }
+      return {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top)  * scaleY
+      };
+    }
+    function getXYEnd(e) {
+      var rect = canvas.getBoundingClientRect();
+      var scaleX = canvas.width  / rect.width;
+      var scaleY = canvas.height / rect.height;
+      if (e.changedTouches) {
+        return {
+          x: (e.changedTouches[0].clientX - rect.left) * scaleX,
+          y: (e.changedTouches[0].clientY - rect.top)  * scaleY
+        };
+      }
+      return {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top)  * scaleY
+      };
+    }
+
+    /* Pick the topmost un-placed piece at a point */
+    function pickPiece(px, py) {
+      for (var i = pieces.length - 1; i >= 0; i--) {
+        var p = pieces[i];
+        if (p.placed) continue;
+        if (px >= p.x && px <= p.x + p.w && py >= p.y && py <= p.y + p.h) return i;
+      }
+      return -1;
+    }
+
+    function onDown(e) {
+      e.preventDefault();
+      var pt  = getXY(e);
+      var idx = pickPiece(pt.x, pt.y);
+      if (idx === -1) return;
+      drag = { idx: idx, offX: pt.x - pieces[idx].x, offY: pt.y - pieces[idx].y };
+      dragX = pt.x; dragY = pt.y;
+      /* Lift piece to top of draw order */
+      var p = pieces.splice(idx, 1)[0];
+      pieces.push(p);
+      drag.idx = pieces.length - 1;
+      p.targetScale = 1.08;
+      canvas.style.cursor = 'grabbing';
+    }
+
+    function onMove(e) {
+      e.preventDefault();
+      if (!drag) return;
+      var pt = getXY(e);
+      dragX = pt.x; dragY = pt.y;
+      var p = pieces[drag.idx];
+      p.x = pt.x - drag.offX;
+      p.y = pt.y - drag.offY;
+    }
+
+    function onUp(e) {
+      if (!drag) return;
+      var pt = getXYEnd(e);
+      var p  = pieces[drag.idx];
+      p.x = pt.x - drag.offX;
+      p.y = pt.y - drag.offY;
+      p.targetScale = 1;
+
+      /* Check if centre of piece is near correct grid slot */
+      var cx = p.x + p.w / 2;
+      var cy = p.y + p.h / 2;
+      var correctCol = p.id % COLS;
+      var correctRow = Math.floor(p.id / COLS);
+      var slotX = correctCol * PW;
+      var slotY = correctRow * PH;
+      var slotCX = slotX + PW / 2;
+      var slotCY = slotY + PH / 2;
+      var dist = Math.sqrt((cx - slotCX) * (cx - slotCX) + (cy - slotCY) * (cy - slotCY));
+
+      if (dist < PW * 0.52) {
+        /* ✅ Snap! */
+        p.x = slotX; p.y = slotY;
+        p.placed = true;
+        snapFlash.push({ x: slotX, y: slotY, w: PW, h: PH, t: 1.0 });
+        playCorrectSound();
+        checkWin();
+      } else {
+        /* ❌ Bounce back — find nearest free tray slot */
+        p.flash = 1.0;
+        var used = {};
+        pieces.forEach(function(q, qi) {
+          if (!q.placed && qi !== drag.idx && q._traySlot !== undefined) used[q._traySlot] = true;
+        });
+        var freeSlot = 0;
+        for (var fs = 0; fs < N; fs++) { if (!used[fs]) { freeSlot = fs; break; } }
+        p._traySlot = freeSlot;
+        var fc = freeSlot % trayColCount;
+        var fr = Math.floor(freeSlot / trayColCount);
+        p.x = fc * trayPW + (trayPW - PW) / 2;
+        p.y = TRAY_Y + 10 + fr * (PH + 6);
+      }
+      drag = null;
+      canvas.style.cursor = 'grab';
+    }
+
+    canvas.addEventListener('mousedown',  onDown);
+    canvas.addEventListener('mousemove',  onMove);
+    canvas.addEventListener('mouseup',    onUp);
+    canvas.addEventListener('touchstart', onDown, { passive: false });
+    canvas.addEventListener('touchmove',  onMove, { passive: false });
+    canvas.addEventListener('touchend',   onUp,   { passive: false });
+
+    /* ---- Check win ---- */
+    var won = false;
+    function checkWin() {
+      var placedCount = pieces.filter(function(p){ return p.placed; }).length;
+      var status = document.getElementById('puzStatus');
+      var left = N - placedCount;
+      if (left > 0) {
+        status.textContent = left + ' piece' + (left > 1 ? 's' : '') + ' left! 🧩';
+      } else if (!won) {
+        won = true;
+        status.textContent = '🎉 Puzzle Complete! Amazing!';
+        playFireworkVolley(6);
+        setTimeout(function(){ nav('final'); burst(); }, 900);
       }
     }
+    checkWin(); /* set initial label */
 
-    /* --- Create pieces --- */
-    var pieces = [];
-    var order = [];
-    for (var i = 0; i < ROWS * COLS; i++) order.push(i);
-    /* shuffle */
-    for (var j = order.length - 1; j > 0; j--) {
-      var k = Math.floor(Math.random() * (j + 1));
-      var tmp = order[j]; order[j] = order[k]; order[k] = tmp;
-    }
+    /* ---- Render loop ---- */
+    var lastTime = 0;
+    function render(ts) {
+      var dt = Math.min((ts - lastTime) / 1000, 0.05); /* seconds, capped */
+      lastTime = ts;
 
-    order.forEach(function(idx) {
-      var row = Math.floor(idx / COLS);
-      var col = idx % COLS;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      var canvas = document.createElement('canvas');
-      canvas.width  = pw;
-      canvas.height = ph;
-      var ctx2 = canvas.getContext('2d');
-      ctx2.drawImage(img,
-        col * (img.naturalWidth / COLS),
-        row * (img.naturalHeight / ROWS),
-        img.naturalWidth / COLS,
-        img.naturalHeight / ROWS,
-        0, 0, pw, ph
-      );
+      /* --- Grid background --- */
+      ctx.fillStyle = '#faf5e9';
+      ctx.fillRect(0, 0, GW, GH);
 
-      /* Piece wrapper div */
-      var piece = document.createElement('div');
-      piece.style.cssText = 'display:inline-block;border:2px solid #2d2d3a;border-radius:3px;' +
-        'cursor:grab;box-shadow:2px 2px 0 #2d2d3a;background:white;' +
-        'touch-action:none;user-select:none;-webkit-user-select:none;' +
-        'transition:box-shadow .1s;';
-      piece.dataset.row = row;
-      piece.dataset.col = col;
-      piece.dataset.placed = '0';
-      piece.appendChild(canvas);
-      tray.appendChild(piece);
-      pieces.push(piece);
-
-      makeDraggable(piece);
-    });
-
-    /* ---- Drag logic ---- */
-    var dragging = null;
-    var dragOffX = 0, dragOffY = 0;
-    var dragOriginParent = null;
-
-    function makeDraggable(el) {
-      /* Mouse */
-      el.addEventListener('mousedown', dragStart);
-      /* Touch */
-      el.addEventListener('touchstart', dragStart, { passive: false });
-    }
-
-    function dragStart(e) {
-      if (e.type === 'touchstart') e.preventDefault();
-      dragging = e.currentTarget;
-      dragging.style.zIndex = 9999;
-      dragging.style.position = 'fixed';
-      dragging.style.boxShadow = '6px 6px 0 #2d2d3a';
-      dragging.style.cursor = 'grabbing';
-      dragOriginParent = dragging.parentNode;
-
-      var rect = dragging.getBoundingClientRect();
-      var cx = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
-      var cy = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
-      dragOffX = cx - rect.left;
-      dragOffY = cy - rect.top;
-
-      dragging.style.left = (cx - dragOffX) + 'px';
-      dragging.style.top  = (cy - dragOffY) + 'px';
-      dragging.style.width = pw + 'px';
-      document.body.appendChild(dragging);
-    }
-
-    function dragMove(e) {
-      if (!dragging) return;
-      if (e.type === 'touchmove') e.preventDefault();
-      var cx = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
-      var cy = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
-      dragging.style.left = (cx - dragOffX) + 'px';
-      dragging.style.top  = (cy - dragOffY) + 'px';
-    }
-
-    function dragEnd(e) {
-      if (!dragging) return;
-      var cx = e.type === 'touchend' ? e.changedTouches[0].clientX : e.clientX;
-      var cy = e.type === 'touchend' ? e.changedTouches[0].clientY : e.clientY;
-
-      var wrapRect = wrap.getBoundingClientRect();
-      var relX = cx - wrapRect.left;
-      var relY = cy - wrapRect.top;
-
-      var targetCol = Math.floor(relX / pw);
-      var targetRow = Math.floor(relY / ph);
-
-      var snapped = false;
-      var snapTolerance = pw * 0.75;
-
-      if (
-        relX >= -snapTolerance && relX <= totalW + snapTolerance &&
-        relY >= -snapTolerance && relY <= totalH + snapTolerance &&
-        targetRow >= 0 && targetRow < ROWS &&
-        targetCol >= 0 && targetCol < COLS
-      ) {
-        var needRow = parseInt(dragging.dataset.row);
-        var needCol = parseInt(dragging.dataset.col);
-
-        if (targetRow === needRow && targetCol === needCol) {
-          /* ✅ Correct slot! */
-          dragging.style.position = 'absolute';
-          dragging.style.left = (targetCol * pw) + 'px';
-          dragging.style.top  = (targetRow * ph) + 'px';
-          dragging.style.zIndex = 10;
-          dragging.style.cursor = 'default';
-          dragging.style.border = '2.5px solid #f0588b';
-          dragging.style.boxShadow = '0 0 0 2px #f0588b55';
-          dragging.dataset.placed = '1';
-          dragging.style.width = '';
-          wrap.appendChild(dragging);
-          snapped = true;
-          /* play a soft chime */
-          playCorrectSound();
-          checkComplete();
-        } else {
-          /* Wrong slot — shake and return */
-          dragging.style.border = '2.5px solid #ff6b6b';
-          setTimeout(function(){ if(dragging) dragging.style.border = '2px solid #2d2d3a'; }, 500);
+      /* Grid slot guides */
+      for (var gr = 0; gr < ROWS; gr++) {
+        for (var gc = 0; gc < COLS; gc++) {
+          ctx.strokeStyle = 'rgba(240,88,139,0.25)';
+          ctx.lineWidth = 1;
+          ctx.setLineDash([6, 4]);
+          ctx.strokeRect(gc * PW + 0.5, gr * PH + 0.5, PW - 1, PH - 1);
         }
       }
+      ctx.setLineDash([]);
 
-      if (!snapped) {
-        /* Return to tray */
-        dragging.style.position = 'relative';
-        dragging.style.left = '';
-        dragging.style.top  = '';
-        dragging.style.zIndex = '';
-        dragging.style.width = '';
-        dragging.style.boxShadow = '2px 2px 0 #2d2d3a';
-        dragging.style.cursor = 'grab';
-        dragOriginParent.appendChild(dragging);
+      /* Grid border */
+      ctx.strokeStyle = '#2d2d3a';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(1.5, 1.5, GW - 3, GH - 3);
+
+      /* --- Tray background --- */
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      roundRect(ctx, 0, TRAY_Y, GW, TRAY_H, 4);
+      ctx.fill();
+      ctx.strokeStyle = '#2d2d3a';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      /* Tray label */
+      ctx.fillStyle = 'rgba(240,88,139,0.18)';
+      ctx.font = 'bold 13px Patrick Hand, cursive';
+      ctx.textAlign = 'center';
+      ctx.fillText('PIECES', GW / 2, TRAY_Y + 11);
+
+      /* --- Snap flash effects --- */
+      for (var sf = snapFlash.length - 1; sf >= 0; sf--) {
+        var fl = snapFlash[sf];
+        fl.t = Math.max(0, fl.t - dt * 3);
+        if (fl.t <= 0) { snapFlash.splice(sf, 1); continue; }
+        ctx.fillStyle = 'rgba(240,88,139,' + (fl.t * 0.35) + ')';
+        ctx.fillRect(fl.x, fl.y, fl.w, fl.h);
       }
-      dragging = null;
+
+      /* --- Draw pieces (placed first, then unplaced, dragging last) --- */
+      /* Placed pieces */
+      pieces.forEach(function(p) {
+        if (!p.placed) return;
+        ctx.drawImage(offscreens[p.id], p.x, p.y, p.w, p.h);
+        /* thin pink border */
+        ctx.strokeStyle = 'rgba(240,88,139,0.7)';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(p.x + 1, p.y + 1, p.w - 2, p.h - 2);
+      });
+
+      /* Un-placed pieces (smooth scale lerp) */
+      pieces.forEach(function(p, pi) {
+        if (p.placed) return;
+        var isDragging = drag && drag.idx === pi;
+
+        /* Smooth scale */
+        p.scale += (p.targetScale - p.scale) * Math.min(dt * 12, 1);
+
+        /* Flash red timer */
+        if (p.flash > 0) p.flash = Math.max(0, p.flash - dt * 4);
+
+        var s  = p.scale;
+        var cx2 = p.x + p.w / 2;
+        var cy2 = p.y + p.h / 2;
+        var dw = p.w * s, dh = p.h * s;
+
+        ctx.save();
+        ctx.translate(cx2, cy2);
+        ctx.scale(s, s);
+
+        /* Shadow for dragging piece */
+        if (isDragging) {
+          ctx.shadowColor = 'rgba(45,45,58,0.35)';
+          ctx.shadowBlur  = 12;
+          ctx.shadowOffsetX = 4;
+          ctx.shadowOffsetY = 4;
+        }
+
+        ctx.drawImage(offscreens[p.id], -p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.shadowColor = 'transparent';
+        ctx.shadowBlur  = 0;
+
+        /* Border */
+        if (p.flash > 0) {
+          ctx.strokeStyle = 'rgba(255,107,107,' + p.flash + ')';
+          ctx.lineWidth = 3 / s;
+        } else if (isDragging) {
+          ctx.strokeStyle = '#f0588b';
+          ctx.lineWidth = 2.5 / s;
+        } else {
+          ctx.strokeStyle = '#2d2d3a';
+          ctx.lineWidth = 2 / s;
+        }
+        ctx.strokeRect(-p.w / 2, -p.h / 2, p.w, p.h);
+
+        ctx.restore();
+      });
+
+      requestAnimationFrame(render);
     }
 
-    document.addEventListener('mousemove', dragMove);
-    document.addEventListener('mouseup',   dragEnd);
-    document.addEventListener('touchmove', dragMove, { passive: false });
-    document.addEventListener('touchend',  dragEnd);
-
-    function checkComplete() {
-      var placed = wrap.querySelectorAll('[data-placed="1"]').length;
-      var status = document.getElementById('puzStatus');
-      status.textContent = (ROWS * COLS - placed) + ' pieces left! 🧩';
-      if (placed === ROWS * COLS) {
-        status.textContent = '🎉 Puzzle Complete!';
-        playFireworkVolley(6);
-        setTimeout(function(){ nav('final'); burst(); }, 700);
-      }
+    /* roundRect helper (fallback for older browsers) */
+    function roundRect(ctx, x, y, w, h, r) {
+      ctx.beginPath();
+      ctx.moveTo(x + r, y);
+      ctx.lineTo(x + w - r, y);
+      ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+      ctx.lineTo(x + w, y + h - r);
+      ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+      ctx.lineTo(x + r, y + h);
+      ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+      ctx.lineTo(x, y + r);
+      ctx.quadraticCurveTo(x, y, x + r, y);
+      ctx.closePath();
     }
+
+    requestAnimationFrame(render);
+    checkWin();
   }
 }
 

@@ -1,181 +1,122 @@
-
+```html
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio Theme</title>
 
-<title>Lovely Birthday</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&display=swap" rel="stylesheet">
 
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:'Fredoka',sans-serif;
-}
-
 body{
-height:100vh;
-background:linear-gradient(135deg,#f3d6ff,#e8c5ff,#f7e4ff);
-display:flex;
-justify-content:center;
-align-items:center;
-overflow:hidden;
+margin:0;
+background:#efe7e3;
+font-family:sans-serif;
 }
 
-/* FLOATING HEARTS */
+/* HERO */
 
-.heart{
-position:absolute;
-color:#ff7ab6;
-font-size:20px;
-animation:float 6s infinite linear;
-opacity:0.6;
-}
-
-@keyframes float{
-0%{transform:translateY(100vh)}
-100%{transform:translateY(-10vh)}
-}
-
-/* MAIN CARD */
-
-.container{
-width:850px;
-background:rgba(255,255,255,0.75);
-backdrop-filter:blur(15px);
-padding:40px;
-border-radius:25px;
-box-shadow:0 25px 40px rgba(0,0,0,0.2);
+.hero{
+background:#7c1f1f;
+color:white;
+padding:100px;
 text-align:center;
 }
 
-/* TITLE */
-
-.title{
-font-size:36px;
-color:#9b59b6;
-margin-bottom:10px;
+.hero h1{
+font-family:'Cinzel Decorative';
+font-size:70px;
+letter-spacing:5px;
+margin:0;
 }
 
-.subtitle{
-color:#777;
-margin-bottom:40px;
+.hero h2{
+font-size:40px;
+margin-top:10px;
 }
 
-/* CARDS */
+/* GRID */
 
-.cards{
-display:flex;
-justify-content:center;
-gap:30px;
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+padding:40px;
 }
 
-.card{
-width:160px;
-height:140px;
-background:linear-gradient(135deg,#d8a8f2,#c18ae6);
-border-radius:20px;
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-color:white;
-font-size:20px;
-cursor:pointer;
-transition:0.3s;
-box-shadow:0 10px 20px rgba(0,0,0,0.2);
+.section{
+background:white;
+padding:40px;
+border-radius:6px;
+box-shadow:0 10px 20px rgba(0,0,0,0.1);
 }
 
-.card:hover{
-transform:translateY(-8px) scale(1.05);
+.section h2{
+font-family:'Cinzel Decorative';
+color:#7c1f1f;
+font-size:35px;
+margin-bottom:20px;
 }
 
-/* BIRTHDAY */
-
-.birthday{
-margin-top:40px;
-}
-
-.cake{
-font-size:90px;
-cursor:pointer;
-animation:bounce 2s infinite;
-}
-
-@keyframes bounce{
-0%,100%{transform:translateY(0)}
-50%{transform:translateY(-12px)}
-}
-
-button{
-margin-top:20px;
-padding:12px 25px;
-border:none;
-border-radius:25px;
-background:#c18ae6;
-color:white;
-font-size:16px;
-cursor:pointer;
-}
-
-button:hover{
-background:#a86bd8;
+.section img{
+width:100%;
+border-radius:5px;
 }
 
 </style>
+
 </head>
 
 <body>
 
-<!-- FLOATING HEARTS -->
+<div class="hero">
 
-<div class="heart" style="left:10%">❤</div>
-<div class="heart" style="left:25%">❤</div>
-<div class="heart" style="left:40%">❤</div>
-<div class="heart" style="left:55%">❤</div>
-<div class="heart" style="left:70%">❤</div>
-<div class="heart" style="left:85%">❤</div>
-
-<div class="container">
-
-<div class="title">💜 THESE ARE FOR YOU 💜</div>
-<div class="subtitle">Click a memory</div>
-
-<div class="cards">
-
-<div class="card">
-🎵
-Music
-</div>
-
-<div class="card">
-📷
-Photos
-</div>
-
-<div class="card">
-💌
-Letter
-</div>
+<h1>PORTFOLIO</h1>
+<h2>Sophie Petrova</h2>
 
 </div>
 
-<div class="birthday">
+<div class="grid">
 
-<h2 style="color:#9b59b6;margin-top:30px;">
-Happy Birthday ❤️
-</h2>
+<div class="section">
 
-<p>Click the cake for your surprise</p>
+<h2>ABOUT ME</h2>
 
-<div class="cake">🎂</div>
+<p>
+Creative designer passionate about storytelling,
+visual branding and content creation.
+</p>
 
-<button>Open Surprise</button>
+</div>
+
+<div class="section">
+
+<h2>I CREATE</h2>
+
+<p>
+Branding  
+Social Media Design  
+Creative Campaigns  
+Visual Identity
+</p>
+
+</div>
+
+<div class="section">
+
+<h2>THE CASE</h2>
+
+<img src="https://picsum.photos/500/300">
+
+</div>
+
+<div class="section">
+
+<h2>STORIES</h2>
+
+<img src="https://picsum.photos/500/301">
 
 </div>
 

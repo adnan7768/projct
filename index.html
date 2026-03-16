@@ -3,7 +3,9 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Story Mode</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Our Story</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
 
@@ -16,99 +18,168 @@ box-sizing:border-box;
 font-family:'Baloo 2',cursive;
 }
 
-/* BACKGROUND */
+/* BODY */
 
 body{
-background:#ffd66b;
+background:linear-gradient(135deg,#ffd6e8,#fff1c7);
+min-height:100vh;
 }
 
-/* GRID PAPER EFFECT */
+/* LOGIN PAGE */
+
+#loginPage{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:linear-gradient(135deg,#ffb6d9,#ffd6e8);
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:999;
+}
+
+.login-box{
+background:white;
+padding:40px;
+border-radius:15px;
+box-shadow:0 15px 30px rgba(0,0,0,0.2);
+text-align:center;
+width:280px;
+}
+
+.login-box h2{
+color:#ff4f81;
+margin-bottom:20px;
+}
+
+.login-box input{
+width:100%;
+padding:10px;
+margin:8px 0;
+border-radius:6px;
+border:1px solid #ccc;
+}
+
+button{
+padding:10px 20px;
+border:none;
+background:#ff4f81;
+color:white;
+border-radius:6px;
+cursor:pointer;
+margin-top:10px;
+}
+
+/* PAPER */
 
 .paper{
 background:
-linear-gradient(#ddd 1px, transparent 1px),
-linear-gradient(90deg,#ddd 1px, transparent 1px);
+linear-gradient(#eaeaea 1px, transparent 1px),
+linear-gradient(90deg,#eaeaea 1px, transparent 1px);
 background-size:40px 40px;
 background-color:white;
 
-width:85%;
-margin:40px auto;
-padding:40px;
-border-radius:10px;
-box-shadow:0 15px 25px rgba(0,0,0,0.2);
+width:95%;
+max-width:1000px;
+margin:auto;
+padding:30px;
+margin-top:30px;
+border-radius:15px;
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
 }
 
 /* HERO */
 
 .hero{
 text-align:center;
-margin-bottom:40px;
+margin-bottom:20px;
 }
 
 .hero h1{
-font-size:60px;
+font-size:40px;
 color:#ff4f81;
-text-shadow:3px 3px #333;
 }
 
-/* GRID LAYOUT */
+/* QUESTIONS */
+
+#questions{
+display:none;
+text-align:center;
+}
+
+.option{
+background:#ffd6e8;
+padding:12px;
+margin:10px auto;
+width:220px;
+border-radius:8px;
+cursor:pointer;
+}
+
+/* SCRAPBOOK */
+
+#scrapbook{
+display:none;
+}
 
 .grid{
 display:grid;
 grid-template-columns:1fr 1fr;
-gap:25px;
+gap:20px;
 }
-
-/* CARDS */
 
 .card{
 background:white;
-padding:25px;
-border-radius:8px;
+padding:20px;
+border-radius:10px;
 box-shadow:0 8px 15px rgba(0,0,0,0.15);
-position:relative;
 }
 
-/* CARD TITLES */
-
-.card h2{
-color:#ff4f81;
-margin-bottom:10px;
+.note{
+background:#fff3a6;
+padding:12px;
+border-radius:6px;
+margin-top:10px;
 }
-
-/* POLAROID IMAGE */
 
 .photo{
 background:white;
-padding:8px;
-border-radius:5px;
+padding:6px;
 box-shadow:0 5px 10px rgba(0,0,0,0.2);
-transform:rotate(-3deg);
 margin-top:10px;
 }
 
 .photo img{
 width:100%;
-border-radius:5px;
 }
 
-/* STICKY NOTE */
+/* FINAL */
 
-.note{
-background:#ffeb99;
-padding:15px;
-border-radius:6px;
-margin-top:10px;
-transform:rotate(2deg);
+#final{
+display:none;
+text-align:center;
 }
 
-/* DOODLE */
+.cake{
+font-size:90px;
+margin-top:20px;
+cursor:pointer;
+}
 
-.doodle{
-position:absolute;
-top:-15px;
-right:-15px;
-font-size:25px;
+/* MOBILE */
+
+@media(max-width:700px){
+
+.grid{
+grid-template-columns:1fr;
+}
+
+.hero h1{
+font-size:30px;
+}
+
 }
 
 </style>
@@ -116,87 +187,205 @@ font-size:25px;
 
 <body>
 
+<!-- LOGIN -->
+
+<div id="loginPage">
+
+<div class="login-box">
+
+<h2>Private Memory Login</h2>
+
+<input placeholder="Username">
+<input type="password" placeholder="Password">
+
+<button onclick="enterSite()">Login</button>
+
+<p style="font-size:12px;margin-top:10px;color:#888">
+Only special people can enter ❤️
+</p>
+
+</div>
+
+</div>
+
 <div class="paper">
 
+<!-- HOME -->
+
+<div id="home">
+
 <div class="hero">
+<h1>Our Story</h1>
+<p>Click start to begin the journey</p>
+</div>
 
-<h1>Creative Story</h1>
-<p>Welcome to my journey</p>
+<button onclick="startStory()">Start Story</button>
 
+</div>
+
+<!-- QUESTIONS -->
+
+<div id="questions">
+
+<h2 id="questionText"></h2>
+
+<div id="answers"></div>
+
+</div>
+
+<!-- SCRAPBOOK -->
+
+<div id="scrapbook">
+
+<div class="hero">
+<h1>These Are For You</h1>
 </div>
 
 <div class="grid">
 
-<!-- HELLO CARD -->
+<div class="card">
+<h2>Music</h2>
+<div class="note">A song that reminds me of you 🎵</div>
+</div>
 
 <div class="card">
-
-<div class="doodle">✏️</div>
-
-<h2>Hello!</h2>
-
-<p>
-Welcome to my story mode.
-Let's explore some memories.
-</p>
-
+<h2>Photos</h2>
 <div class="photo">
 <img src="https://picsum.photos/300/200">
 </div>
-
 </div>
 
-<!-- ABOUT CARD -->
-
 <div class="card">
-
-<div class="doodle">📎</div>
-
-<h2>About Me</h2>
-
-<p>
-Short introduction text goes here.
-</p>
-
+<h2>Letter</h2>
 <div class="note">
-Creative person who loves design and storytelling.
+Happy Birthday ❤️  
+You make every day beautiful.
 </div>
-
 </div>
-
-<!-- SKILLS -->
 
 <div class="card">
-
-<div class="doodle">🖊</div>
-
-<h2>Personal Skills</h2>
-
-<ul>
-<li>Creative Design</li>
-<li>Photography</li>
-<li>Storytelling</li>
-</ul>
-
+<h2>Memories</h2>
+<div class="photo">
+<img src="https://picsum.photos/300/201">
 </div>
-
-<!-- WORK -->
-
-<div class="card">
-
-<div class="doodle">📌</div>
-
-<h2>Work Experience</h2>
-
-<p>
-Designer / Creator / Artist
-</p>
-
 </div>
 
 </div>
 
+<br>
+
+<button onclick="showFinal()">Continue</button>
+
 </div>
+
+<!-- FINAL -->
+
+<div id="final">
+
+<h1>Happy Birthday ❤️</h1>
+
+<p>Click the cake for your surprise</p>
+
+<div class="cake">🎂</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* LOGIN */
+
+function enterSite(){
+document.getElementById("loginPage").style.display="none";
+}
+
+/* QUESTIONS */
+
+let questions=[
+
+{
+q:"Where did we first meet?",
+a:["School","Instagram","Cafe","Mall"],
+correct:1
+},
+
+{
+q:"Who said I love you first?",
+a:["Me","You"],
+correct:0
+},
+
+{
+q:"What day is today?",
+a:["Holiday","Your Birthday","Random"],
+correct:1
+}
+
+];
+
+let current=0;
+
+function startStory(){
+
+document.getElementById("home").style.display="none";
+document.getElementById("questions").style.display="block";
+
+loadQuestion();
+
+}
+
+function loadQuestion(){
+
+let q=questions[current];
+
+document.getElementById("questionText").innerText=q.q;
+
+let html="";
+
+q.a.forEach((ans,i)=>{
+
+html+=`<div class="option" onclick="check(${i})">${ans}</div>`;
+
+});
+
+document.getElementById("answers").innerHTML=html;
+
+}
+
+function check(i){
+
+if(i===questions[current].correct){
+
+current++;
+
+if(current<questions.length){
+
+loadQuestion();
+
+}else{
+
+document.getElementById("questions").style.display="none";
+document.getElementById("scrapbook").style.display="block";
+
+}
+
+}else{
+
+alert("Try again 😄");
+
+}
+
+}
+
+function showFinal(){
+
+document.getElementById("scrapbook").style.display="none";
+document.getElementById("final").style.display="block";
+
+}
+
+</script>
 
 </body>
 </html>

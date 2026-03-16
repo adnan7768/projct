@@ -1,4 +1,4 @@
-
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,23 +27,6 @@ min-height:100vh;
 overflow-x:hidden;
 }
 
-/* GRID PAPER */
-
-.paper{
-background:
-linear-gradient(#e9e9e9 1px, transparent 1px),
-linear-gradient(90deg,#e9e9e9 1px, transparent 1px);
-background-size:40px 40px;
-background-color:white;
-
-max-width:1000px;
-margin:auto;
-margin-top:40px;
-padding:40px;
-border-radius:20px;
-box-shadow:0 20px 40px rgba(0,0,0,0.2);
-}
-
 /* DOODLES */
 
 .doodle{
@@ -59,19 +42,7 @@ animation:float 6s infinite ease-in-out;
 100%{transform:translateY(0)}
 }
 
-/* HERO */
-
-.hero{
-text-align:center;
-margin-bottom:30px;
-}
-
-.hero h1{
-font-size:48px;
-color:#ff4f81;
-}
-
-/* LOGIN */
+/* LOGIN PAGE */
 
 #loginPage{
 position:fixed;
@@ -108,6 +79,8 @@ border-radius:6px;
 border:1px solid #ddd;
 }
 
+/* BUTTON */
+
 button{
 padding:12px 25px;
 background:#ff4f81;
@@ -115,6 +88,36 @@ border:none;
 border-radius:8px;
 color:white;
 cursor:pointer;
+margin-top:10px;
+}
+
+/* PAPER */
+
+.paper{
+background:
+linear-gradient(#e9e9e9 1px, transparent 1px),
+linear-gradient(90deg,#e9e9e9 1px, transparent 1px);
+background-size:40px 40px;
+background-color:white;
+
+max-width:1000px;
+margin:auto;
+margin-top:40px;
+padding:40px;
+border-radius:20px;
+box-shadow:0 20px 40px rgba(0,0,0,0.2);
+}
+
+/* HERO */
+
+.hero{
+text-align:center;
+margin-bottom:30px;
+}
+
+.hero h1{
+font-size:48px;
+color:#ff4f81;
 }
 
 /* QUESTIONS */
@@ -151,34 +154,25 @@ grid-template-columns:1fr 1fr;
 gap:20px;
 }
 
-/* CARD */
-
 .card{
 background:white;
 padding:20px;
 border-radius:12px;
 box-shadow:0 10px 20px rgba(0,0,0,0.15);
-position:relative;
 }
-
-/* STICKY NOTE */
 
 .note{
 background:#fff2a8;
 padding:12px;
 border-radius:8px;
 margin-top:10px;
-transform:rotate(-2deg);
 }
-
-/* POLAROID */
 
 .photo{
 background:white;
 padding:8px;
 box-shadow:0 6px 12px rgba(0,0,0,0.2);
 margin-top:10px;
-transform:rotate(2deg);
 }
 
 .photo img{
@@ -186,7 +180,7 @@ width:100%;
 border-radius:4px;
 }
 
-/* FINAL PAGE */
+/* FINAL */
 
 #final{
 display:none;
@@ -247,6 +241,12 @@ font-size:34px;
 
 </div>
 
+<!-- BACKGROUND MUSIC -->
+
+<audio id="bgMusic" loop>
+<source src="JumpAroundMode.mp3" type="audio/mpeg">
+</audio>
+
 <div class="paper">
 
 <!-- HOME -->
@@ -298,7 +298,7 @@ font-size:34px;
 <h2>Letter</h2>
 <div class="note">
 Happy Birthday ❤️  
-You are the best part of my life.
+You make every day brighter.
 </div>
 </div>
 
@@ -336,7 +336,14 @@ You are the best part of my life.
 /* LOGIN */
 
 function enterSite(){
+
 document.getElementById("loginPage").style.display="none";
+
+let music=document.getElementById("bgMusic");
+
+music.volume=0.4;
+music.play();
+
 }
 
 /* QUESTIONS */
@@ -345,7 +352,7 @@ let questions=[
 
 {q:"Where did we first meet?",a:["School","Instagram","Cafe","Mall"],correct:1},
 {q:"Who said I love you first?",a:["Me","You"],correct:0},
-{q:"Our favorite place?",a:["Cafe","Beach","Mall"],correct:2},
+{q:"Our favorite place?",a:["Cafe","Beach","Mall"],correct:1},
 {q:"What do we enjoy doing together?",a:["Movies","Travel","Gaming"],correct:0},
 {q:"What day is today?",a:["Holiday","Your Birthday","Random"],correct:1}
 
@@ -415,4 +422,3 @@ document.getElementById("final").style.display="block";
 </body>
 </html>
 ```
-                                                                                                                                                                                                                                                                                                                                    

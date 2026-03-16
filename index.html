@@ -18,14 +18,11 @@
 --pink2:#ff85a8;
 --cream:#fdf8f0;
 --paper:#faf5e9;
---tape:#ffe8b3;
 --navy:#2d2d3a;
 --yellow:#ffd94a;
 --mint:#a8e6cf;
 --lavender:#d4b8f0;
 --red:#ff6b6b;
---blue:#6baed6;
---grid-c:rgba(180,180,220,0.18);
 }
 
 *{
@@ -40,59 +37,19 @@ font-family:'Patrick Hand',cursive;
 background:var(--cream);
 min-height:100vh;
 overflow-x:hidden;
-position:relative;
--webkit-font-smoothing:antialiased;
 }
 
-/* GRID BACKGROUND */
+/* CARD */
 
-body::before{
-content:'';
-position:fixed;
-inset:0;
-z-index:0;
-background-image:
-linear-gradient(var(--grid-c) 1px, transparent 1px),
-linear-gradient(90deg,var(--grid-c) 1px, transparent 1px);
-background-size:28px 28px;
-pointer-events:none;
-}
-
-/* TAPE */
-
-.tape-strip{
-position:fixed;
-left:0;
-right:0;
-height:18px;
-z-index:2;
-pointer-events:none;
-background:repeating-linear-gradient(90deg,var(--pink) 0,var(--pink) 16px,white 16px,white 32px);
-opacity:.5;
-}
-
-.tape-strip.top{top:0}
-.tape-strip.bottom{bottom:0}
-
-/* SECTION */
-
-.section{
-position:relative;
-z-index:1;
-display:none;
-max-width:480px;
+.card{
+background:var(--paper);
+border:3px solid var(--navy);
+border-radius:6px;
+padding:40px 25px;
+box-shadow:6px 6px 0 var(--navy);
+text-align:center;
+max-width:420px;
 margin:auto;
-padding:36px 16px 100px;
-}
-
-.section.active{
-display:block;
-animation:pgIn .45s ease both;
-}
-
-@keyframes pgIn{
-from{opacity:0;transform:translateY(12px)}
-to{opacity:1;transform:translateY(0)}
 }
 
 /* LOGIN */
@@ -100,147 +57,92 @@ to{opacity:1;transform:translateY(0)}
 #loginPage{
 position:fixed;
 inset:0;
-z-index:999;
-background:var(--cream);
 display:flex;
 justify-content:center;
 align-items:center;
-padding:20px;
-transition:opacity .7s;
+background:var(--cream);
+z-index:1000;
 }
 
-#loginPage.hide{
-opacity:0;
-pointer-events:none;
-}
-
-.login-card{
-background:var(--paper);
-border:3px solid var(--navy);
-border-radius:4px;
-padding:40px 28px 36px;
+input{
 width:100%;
-max-width:340px;
-text-align:center;
-box-shadow:6px 6px 0 var(--navy);
-position:relative;
-}
-
-.ltitle{
-font-family:'Caveat',cursive;
-font-size:42px;
-font-weight:700;
-color:var(--navy);
-}
-
-.ltitle span{color:var(--pink)}
-
-.lsub{
-font-size:11px;
-letter-spacing:.18em;
-text-transform:uppercase;
-color:#999;
-margin-bottom:24px;
-}
-
-.login-card input{
-width:100%;
-padding:13px 16px;
+padding:12px;
 margin-bottom:12px;
-border:2.5px solid var(--navy);
-border-radius:3px;
-background:white;
+border:2px solid var(--navy);
 font-family:'Patrick Hand',cursive;
 font-size:16px;
-color:var(--navy);
-outline:none;
-box-shadow:3px 3px 0 rgba(0,0,0,.1);
 }
 
 /* BUTTON */
 
 .btn{
-display:inline-flex;
-align-items:center;
-justify-content:center;
-gap:10px;
-padding:14px 32px;
-border:2.5px solid var(--navy);
-border-radius:3px;
-font-family:'Caveat',cursive;
-font-size:20px;
-font-weight:700;
-cursor:pointer;
-position:relative;
-}
-
-.btn-p{
 background:var(--pink);
 color:white;
+border:2px solid var(--navy);
+padding:12px 20px;
+cursor:pointer;
+font-family:'Caveat',cursive;
+font-size:22px;
 box-shadow:4px 4px 0 var(--navy);
-width:100%;
 }
 
-/* CARDS */
+/* SECTIONS */
 
-.page-card,
-.q-card,
-.puz-card,
-.fin-card{
-background:var(--paper);
-border:3px solid var(--navy);
-border-radius:4px;
-box-shadow:6px 6px 0 var(--navy);
-position:relative;
+.section{
+display:none;
+padding:40px 20px;
+max-width:480px;
+margin:auto;
 text-align:center;
 }
 
-/* TITLE */
+.section.active{
+display:block;
+animation:fade .4s;
+}
 
-.pg-title{
+@keyframes fade{
+from{opacity:0;transform:translateY(10px)}
+to{opacity:1}
+}
+
+.title{
 font-family:'Caveat',cursive;
-font-size:58px;
-font-weight:700;
+font-size:56px;
 color:var(--navy);
 }
 
-.pg-title span{color:var(--pink)}
+.title span{color:var(--pink)}
 
-.pg-sub{
+.subtitle{
 font-size:12px;
-letter-spacing:.16em;
-text-transform:uppercase;
-color:#999;
-margin-bottom:30px;
+letter-spacing:2px;
+color:#888;
+margin-bottom:25px;
 }
 
 /* QUESTIONS */
 
-.q-text{
+.q{
 font-family:'Caveat',cursive;
-font-size:28px;
-font-weight:700;
-color:var(--navy);
-margin-bottom:28px;
+font-size:30px;
+margin-bottom:20px;
 }
 
-.opts{
+.options{
 display:grid;
 grid-template-columns:1fr 1fr;
 gap:12px;
 }
 
 .opt{
-padding:14px 12px;
 background:white;
-border:2.5px solid var(--navy);
-border-radius:3px;
+border:2px solid var(--navy);
+padding:10px;
 font-family:'Caveat',cursive;
-font-size:18px;
-color:var(--navy);
-text-align:center;
-box-shadow:3px 3px 0 var(--navy);
+font-size:20px;
 cursor:pointer;
+box-shadow:3px 3px 0 var(--navy);
 }
 
 .opt.wrong{
@@ -250,36 +152,27 @@ color:white;
 
 /* PUZZLE */
 
-#forPuzzle{
-width:100%;
-max-width:320px;
+#puzzle{
+width:320px;
+height:320px;
 margin:auto;
-touch-action:none;
 }
 
 /* FINAL */
 
-.fin-bday{
-font-family:'Caveat',cursive;
-font-size:44px;
-font-weight:700;
-color:var(--navy);
+.cake{
+font-size:70px;
+cursor:pointer;
+margin-top:20px;
 }
-
-.fin-name{
-font-family:'Caveat',cursive;
-font-size:44px;
-color:var(--pink);
-}
-
-/* LETTER */
 
 .letter{
-background:white;
-border:2.5px solid var(--navy);
-padding:24px;
-margin-top:24px;
 display:none;
+margin-top:25px;
+text-align:left;
+background:white;
+border:2px solid var(--navy);
+padding:20px;
 box-shadow:4px 4px 0 var(--navy);
 }
 
@@ -288,29 +181,26 @@ box-shadow:4px 4px 0 var(--navy);
 
 <body>
 
-<div class="tape-strip top"></div>
-<div class="tape-strip bottom"></div>
-
 <!-- LOGIN -->
 
 <div id="loginPage">
 
-<div class="login-card">
+<div class="card">
 
-<div class="ltitle">Our <span>Story</span></div>
+<h1 class="title">Our <span>Story</span></h1>
 
-<div class="lsub">Secret Memory Login</div>
+<p class="subtitle">SECRET MEMORY LOGIN</p>
 
-<input id="uInput" placeholder="Username">
-<input id="pInput" type="password" placeholder="Password">
+<input placeholder="Username">
+<input type="password" placeholder="Password">
 
-<button class="btn btn-p" onclick="enterSite()">Enter</button>
-
-</div>
+<button class="btn" onclick="enter()">Enter</button>
 
 </div>
 
-<audio id="bgMusic" loop>
+</div>
+
+<audio id="music" loop>
 <source src="JumpAroundMode.mp3" type="audio/mpeg">
 </audio>
 
@@ -318,15 +208,13 @@ box-shadow:4px 4px 0 var(--navy);
 
 <div class="section active" id="home">
 
-<div class="page-card" style="padding:52px 24px 44px">
+<div class="card">
 
-<h1 class="pg-title">Our <span>Story</span></h1>
+<h1 class="title">Our <span>Story</span></h1>
 
-<p class="pg-sub">Start the memory journey</p>
+<p class="subtitle">Start the memory journey</p>
 
-<button class="btn btn-p" style="max-width:220px;margin:auto" onclick="nav('questions');loadQ()">
-Start
-</button>
+<button class="btn" onclick="nav('questions');loadQ()">Start</button>
 
 </div>
 
@@ -336,11 +224,11 @@ Start
 
 <div class="section" id="questions">
 
-<div class="q-card" style="padding:42px 20px">
+<div class="card">
 
-<div class="q-text" id="qText"></div>
+<div class="q" id="q"></div>
 
-<div class="opts" id="qOpts"></div>
+<div class="options" id="opts"></div>
 
 </div>
 
@@ -350,13 +238,15 @@ Start
 
 <div class="section" id="puzzlePage">
 
-<div class="puz-card" style="padding:40px">
+<div class="card">
 
-<h2>Complete the Puzzle</h2>
+<h2 class="title" style="font-size:38px">Complete the Puzzle</h2>
 
-<div id="forPuzzle"></div>
+<p class="subtitle">Unlock your birthday surprise</p>
 
-<button class="btn btn-p" id="puzzleBtn" onclick="startPuzzle()">Start Puzzle</button>
+<div id="puzzle"></div>
+
+<button class="btn" id="pBtn" onclick="startPuzzle()">Start Puzzle</button>
 
 </div>
 
@@ -366,17 +256,17 @@ Start
 
 <div class="section" id="final">
 
-<div class="fin-card" style="padding:50px">
+<div class="card">
 
-<div class="fin-bday">Happy Birthday</div>
+<h1 class="title">Happy Birthday</h1>
 
-<div class="fin-name">*NAME*</div>
+<h1 class="title"><span>*NAME*</span></h1>
 
-<p>Tap cake for surprise</p>
+<p class="subtitle">Tap cake for surprise</p>
 
-<div style="font-size:60px;cursor:pointer" onclick="revealLetter()">🎂</div>
+<div class="cake" onclick="showLetter()">🎂</div>
 
-<div class="letter" id="letterBox">
+<div class="letter" id="letter">
 
 <h3>Happy Birthday, My Love!</h3>
 
@@ -384,7 +274,11 @@ Start
 
 On this special day I just want to remind you how deeply you mean to me.
 
-You are my best friend, my happiness, and the most beautiful part of my life.
+You are not only my partner but my best friend and my biggest happiness.
+
+Every moment with you feels brighter and more meaningful.
+
+I hope this year brings you everything you dream of.
 
 Happy Birthday ❤️
 
@@ -400,27 +294,24 @@ Happy Birthday ❤️
 
 /* LOGIN */
 
-function enterSite(){
+function enter(){
 
-document.getElementById("loginPage").classList.add("hide")
+document.getElementById("loginPage").style.display="none"
 
-var m=document.getElementById("bgMusic")
+const m=document.getElementById("music")
 
-setTimeout(function(){
+setTimeout(()=>{
 
 m.volume=.35
-
 m.play().catch(()=>{})
 
-},500)
+},400)
 
 }
 
-/* NAV */
+/* NAVIGATION */
 
-var hist=[]
-
-function showSec(id){
+function nav(id){
 
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"))
 
@@ -430,19 +321,9 @@ window.scrollTo(0,0)
 
 }
 
-function nav(to){
-
-var cur=document.querySelector(".section.active")
-
-if(cur)hist.push(cur.id)
-
-showSec(to)
-
-}
-
 /* QUESTIONS */
 
-var Qs=[
+const Q=[
 
 {q:"Where did we first meet?",a:["School","Instagram","Cafe","Mall"],c:1},
 
@@ -450,47 +331,41 @@ var Qs=[
 
 {q:"What's our favourite place?",a:["Cafe","Beach","Mall"],c:1},
 
-{q:"What do we enjoy doing together?",a:["Movies","Travel","Gaming"],c:0},
+{q:"What do we enjoy together?",a:["Movies","Travel","Gaming"],c:0},
 
 {q:"What special day is today?",a:["Holiday","Your Birthday","Random"],c:1}
 
 ]
 
-var qi=0
+let qi=0
 
 function loadQ(){
 
-var q=Qs[qi]
+const data=Q[qi]
 
-document.getElementById("qText").innerText=q.q
+document.getElementById("q").innerText=data.q
 
-var html=""
+document.getElementById("opts").innerHTML=data.a.map((t,i)=>
 
-for(var i=0;i<q.a.length;i++){
+`<div class="opt" onclick="ans(this,${i})">${t}</div>`
 
-html+='<div class="opt" onclick="checkA(this,'+i+')">'+q.a[i]+"</div>"
-
-}
-
-document.getElementById("qOpts").innerHTML=html
+).join("")
 
 }
 
-function checkA(el,i){
+function ans(el,i){
 
-if(i===Qs[qi].c){
+if(i===Q[qi].c){
 
 qi++
 
-if(qi<Qs.length)loadQ()
-
+if(qi<Q.length)loadQ()
 else nav("puzzlePage")
 
 }else{
 
 el.classList.add("wrong")
-
-setTimeout(()=>el.classList.remove("wrong"),500)
+setTimeout(()=>el.classList.remove("wrong"),400)
 
 }
 
@@ -500,51 +375,95 @@ setTimeout(()=>el.classList.remove("wrong"),500)
 
 function startPuzzle(){
 
-document.getElementById("puzzleBtn").style.display="none"
+document.getElementById("pBtn").style.display="none"
 
-try{
+const puzzle=new headbreaker.Canvas("puzzle",{
 
-new Puzzle({
-
-container:"forPuzzle",
-
-image:"poster1.jpeg",
-
-piecesX:3,
-
-piecesY:3,
-
-pieceSize:100,
-
-onComplete:function(){
-
-setTimeout(()=>nav("final"),400)
-
-}
+width:320,
+height:320,
+pieceSize:80,
+strokeWidth:2,
+lineSoftness:0.18,
+image:"poster1.jpeg"
 
 })
 
-}catch(e){
+puzzle.adjustImagesToPuzzleHeight()
 
-document.getElementById("forPuzzle").innerHTML="<p>Puzzle unlocked 🎉</p>"
+puzzle.autogenerate({
 
-setTimeout(()=>nav("final"),1500)
+horizontalPiecesCount:4,
+verticalPiecesCount:4
+
+})
+
+puzzle.shuffle(0.8)
+
+puzzle.draw()
+
+puzzle.attachSolvedValidator()
+
+puzzle.onValid(()=>{
+
+setTimeout(()=>{
+
+nav("final")
+fireworks()
+
+},700)
+
+})
+
+}
+
+/* FIREWORKS */
+
+function fireworks(){
+
+for(let i=0;i<120;i++){
+
+const el=document.createElement("div")
+
+el.style.position="fixed"
+el.style.width="8px"
+el.style.height="8px"
+el.style.borderRadius="50%"
+
+const colors=["#ff6b6b","#ffd94a","#a8e6cf","#f0588b","#d4b8f0"]
+
+el.style.background=colors[Math.floor(Math.random()*colors.length)]
+
+el.style.left=Math.random()*100+"%"
+el.style.top="40%"
+el.style.zIndex="9999"
+
+document.body.appendChild(el)
+
+const angle=Math.random()*360
+const dist=200+Math.random()*200
+
+el.animate([
+{transform:"translate(0,0)",opacity:1},
+{transform:`translate(${Math.cos(angle)*dist}px,${Math.sin(angle)*dist}px)`,opacity:0}
+],{duration:1200,easing:"ease-out"})
+
+setTimeout(()=>el.remove(),1200)
 
 }
 
 }
 
-/* FINAL */
+/* LETTER */
 
-function revealLetter(){
+function showLetter(){
 
-document.getElementById("letterBox").style.display="block"
+document.getElementById("letter").style.display="block"
 
 }
 
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/jigsaw-puzzle@1.0.0/dist/jigsaw-puzzle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/headbreaker@4.3.0/dist/headbreaker.js"></script>
 
 </body>
 </html>

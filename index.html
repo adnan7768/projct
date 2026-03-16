@@ -1,13 +1,14 @@
-```html
+
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>Our Story</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 
@@ -21,11 +22,56 @@ font-family:'Baloo 2',cursive;
 /* BODY */
 
 body{
-background:linear-gradient(135deg,#ffd6e8,#fff1c7);
+background:#ffe3f0;
 min-height:100vh;
+overflow-x:hidden;
 }
 
-/* LOGIN PAGE */
+/* GRID PAPER */
+
+.paper{
+background:
+linear-gradient(#e9e9e9 1px, transparent 1px),
+linear-gradient(90deg,#e9e9e9 1px, transparent 1px);
+background-size:40px 40px;
+background-color:white;
+
+max-width:1000px;
+margin:auto;
+margin-top:40px;
+padding:40px;
+border-radius:20px;
+box-shadow:0 20px 40px rgba(0,0,0,0.2);
+}
+
+/* DOODLES */
+
+.doodle{
+position:absolute;
+font-size:28px;
+opacity:0.6;
+animation:float 6s infinite ease-in-out;
+}
+
+@keyframes float{
+0%{transform:translateY(0)}
+50%{transform:translateY(-10px)}
+100%{transform:translateY(0)}
+}
+
+/* HERO */
+
+.hero{
+text-align:center;
+margin-bottom:30px;
+}
+
+.hero h1{
+font-size:48px;
+color:#ff4f81;
+}
+
+/* LOGIN */
 
 #loginPage{
 position:fixed;
@@ -33,7 +79,7 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-background:linear-gradient(135deg,#ffb6d9,#ffd6e8);
+background:linear-gradient(135deg,#ff9ac7,#ffc2dd);
 display:flex;
 justify-content:center;
 align-items:center;
@@ -43,10 +89,10 @@ z-index:999;
 .login-box{
 background:white;
 padding:40px;
-border-radius:15px;
-box-shadow:0 15px 30px rgba(0,0,0,0.2);
+border-radius:20px;
+box-shadow:0 20px 40px rgba(0,0,0,0.3);
 text-align:center;
-width:280px;
+width:300px;
 }
 
 .login-box h2{
@@ -57,49 +103,18 @@ margin-bottom:20px;
 .login-box input{
 width:100%;
 padding:10px;
-margin:8px 0;
+margin:10px 0;
 border-radius:6px;
-border:1px solid #ccc;
+border:1px solid #ddd;
 }
 
 button{
-padding:10px 20px;
-border:none;
+padding:12px 25px;
 background:#ff4f81;
+border:none;
+border-radius:8px;
 color:white;
-border-radius:6px;
 cursor:pointer;
-margin-top:10px;
-}
-
-/* PAPER */
-
-.paper{
-background:
-linear-gradient(#eaeaea 1px, transparent 1px),
-linear-gradient(90deg,#eaeaea 1px, transparent 1px);
-background-size:40px 40px;
-background-color:white;
-
-width:95%;
-max-width:1000px;
-margin:auto;
-padding:30px;
-margin-top:30px;
-border-radius:15px;
-box-shadow:0 10px 25px rgba(0,0,0,0.2);
-}
-
-/* HERO */
-
-.hero{
-text-align:center;
-margin-bottom:20px;
-}
-
-.hero h1{
-font-size:40px;
-color:#ff4f81;
 }
 
 /* QUESTIONS */
@@ -110,12 +125,18 @@ text-align:center;
 }
 
 .option{
-background:#ffd6e8;
+background:#ffd9ec;
 padding:12px;
-margin:10px auto;
+margin:12px auto;
 width:220px;
-border-radius:8px;
+border-radius:10px;
 cursor:pointer;
+transition:0.2s;
+}
+
+.option:hover{
+transform:scale(1.05);
+background:#ffc3de;
 }
 
 /* SCRAPBOOK */
@@ -130,32 +151,42 @@ grid-template-columns:1fr 1fr;
 gap:20px;
 }
 
+/* CARD */
+
 .card{
 background:white;
 padding:20px;
-border-radius:10px;
-box-shadow:0 8px 15px rgba(0,0,0,0.15);
+border-radius:12px;
+box-shadow:0 10px 20px rgba(0,0,0,0.15);
+position:relative;
 }
 
+/* STICKY NOTE */
+
 .note{
-background:#fff3a6;
+background:#fff2a8;
 padding:12px;
-border-radius:6px;
+border-radius:8px;
 margin-top:10px;
+transform:rotate(-2deg);
 }
+
+/* POLAROID */
 
 .photo{
 background:white;
-padding:6px;
-box-shadow:0 5px 10px rgba(0,0,0,0.2);
+padding:8px;
+box-shadow:0 6px 12px rgba(0,0,0,0.2);
 margin-top:10px;
+transform:rotate(2deg);
 }
 
 .photo img{
 width:100%;
+border-radius:4px;
 }
 
-/* FINAL */
+/* FINAL PAGE */
 
 #final{
 display:none;
@@ -163,9 +194,15 @@ text-align:center;
 }
 
 .cake{
-font-size:90px;
+font-size:100px;
 margin-top:20px;
 cursor:pointer;
+animation:bounce 2s infinite;
+}
+
+@keyframes bounce{
+0%,100%{transform:translateY(0)}
+50%{transform:translateY(-15px)}
 }
 
 /* MOBILE */
@@ -177,7 +214,7 @@ grid-template-columns:1fr;
 }
 
 .hero h1{
-font-size:30px;
+font-size:34px;
 }
 
 }
@@ -187,22 +224,24 @@ font-size:30px;
 
 <body>
 
+<!-- DOODLES -->
+
+<div class="doodle" style="top:20px;left:20px;">⭐</div>
+<div class="doodle" style="top:80px;right:50px;">❤️</div>
+<div class="doodle" style="bottom:50px;left:60px;">✨</div>
+
 <!-- LOGIN -->
 
 <div id="loginPage">
 
 <div class="login-box">
 
-<h2>Private Memory Login</h2>
+<h2>Secret Memory Login</h2>
 
 <input placeholder="Username">
 <input type="password" placeholder="Password">
 
-<button onclick="enterSite()">Login</button>
-
-<p style="font-size:12px;margin-top:10px;color:#888">
-Only special people can enter ❤️
-</p>
+<button onclick="enterSite()">Enter</button>
 
 </div>
 
@@ -216,10 +255,10 @@ Only special people can enter ❤️
 
 <div class="hero">
 <h1>Our Story</h1>
-<p>Click start to begin the journey</p>
+<p>Start the memory journey</p>
 </div>
 
-<button onclick="startStory()">Start Story</button>
+<button onclick="startStory()">Start</button>
 
 </div>
 
@@ -245,7 +284,7 @@ Only special people can enter ❤️
 
 <div class="card">
 <h2>Music</h2>
-<div class="note">A song that reminds me of you 🎵</div>
+<div class="note">A special song for you 🎵</div>
 </div>
 
 <div class="card">
@@ -259,7 +298,7 @@ Only special people can enter ❤️
 <h2>Letter</h2>
 <div class="note">
 Happy Birthday ❤️  
-You make every day beautiful.
+You are the best part of my life.
 </div>
 </div>
 
@@ -284,7 +323,7 @@ You make every day beautiful.
 
 <h1>Happy Birthday ❤️</h1>
 
-<p>Click the cake for your surprise</p>
+<p>Click the cake</p>
 
 <div class="cake">🎂</div>
 
@@ -304,23 +343,11 @@ document.getElementById("loginPage").style.display="none";
 
 let questions=[
 
-{
-q:"Where did we first meet?",
-a:["School","Instagram","Cafe","Mall"],
-correct:1
-},
-
-{
-q:"Who said I love you first?",
-a:["Me","You"],
-correct:0
-},
-
-{
-q:"What day is today?",
-a:["Holiday","Your Birthday","Random"],
-correct:1
-}
+{q:"Where did we first meet?",a:["School","Instagram","Cafe","Mall"],correct:1},
+{q:"Who said I love you first?",a:["Me","You"],correct:0},
+{q:"Our favorite place?",a:["Cafe","Beach","Mall"],correct:2},
+{q:"What do we enjoy doing together?",a:["Movies","Travel","Gaming"],correct:0},
+{q:"What day is today?",a:["Holiday","Your Birthday","Random"],correct:1}
 
 ];
 
@@ -344,9 +371,7 @@ document.getElementById("questionText").innerText=q.q;
 let html="";
 
 q.a.forEach((ans,i)=>{
-
 html+=`<div class="option" onclick="check(${i})">${ans}</div>`;
-
 });
 
 document.getElementById("answers").innerHTML=html;
@@ -372,7 +397,7 @@ document.getElementById("scrapbook").style.display="block";
 
 }else{
 
-alert("Try again 😄");
+alert("Oops! Try again 😄");
 
 }
 
@@ -390,3 +415,4 @@ document.getElementById("final").style.display="block";
 </body>
 </html>
 ```
+                                                                                                                                                                                                                                                                                                                                    
